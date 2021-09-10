@@ -6,4 +6,3 @@ variables:
     build_exactly_for: "stable-zulu" # omit neuron64 for now
 	build_for_product: "zulu"
     GIT_SUBMODULE_STRATEGY: none
-
