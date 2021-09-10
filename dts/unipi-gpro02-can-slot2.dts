@@ -1,0 +1,86 @@
+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+/*
+ * Device Tree fragment for Unipi Gate PRO IQRF board, v0.3
+ *
+ * Copyright 2021 Faster CZ, spol. s r.o.
+ *
+ * IQRF card is in slot A.
+ */
+
+/dts-v1/;
+
+#include <dt-bindings/clock/imx8mm-clock.h>
+#include <dt-bindings/reset/imx8mq-reset.h>
+#include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/input/input.h>
+#include <dt-bindings/interrupt-controller/arm-gic.h>
+#include <dt-bindings/reset/imx8mm-dispmix.h>
+#include <dt-bindings/thermal/thermal.h>
+
+#include "imx8mm-pinfunc.h"
+
+/plugin/;
+
+/ {
+	fragment@0 {
+		target = <&i2c3>;
+		__overlay__ {
+       		#address-cells = <1>;
+	    	#size-cells = <0>;
+
+	        gpio_slota: pca9501@18 {
+        		compatible = "nxp,pcf8574";
+		        gpio-controller;
+        		#gpio-cells = <2>;
+		        reg = <0x18>;
+        	    gpio-line-names = "SLOT2_CAN_LED",
+		        	  "SLOT2_CAN_RESET",
+        			  "",
+		        	  "","","","","";
+	        };
+
+            ee_slota@58 {
+                compatible = "24c02";
+                reg = <0x48>;
+                vcc-supply = <&vcc>;
+            };
+		};
+	};
+
+	fragment@1 {
+		target-path = "/";
+		__overlay__ {
+            /* Fixed crystal dedicated to mcp251x */
+            clk16ma: clock-16ma {
+                compatible = "fixed-clock";
+                #clock-cells = <0>;
+                clock-frequency = <16000000>;
+                clock-output-names = "clk16m";
+            };
+		};
+	};
+
+	fragment@2 {
+		target = <&ecspi4>;
+		__overlay__ {
+	        status = "okay";
+       		#address-cells = <1>;
+	    	#size-cells = <0>;
+
+        	mcp2515: can@5 {
+		        compatible = "microchip,mcp2515";
+        		pinctrl-names = "default";
+		        pinctrl-0 = <&pinctrl_ecspi_int>;
+            	reg = <5>;
+                clocks = <&clk16ma>;
+                interrupt-parent = <&gpio5>;
+                interrupts = <20 IRQ_TYPE_EDGE_FALLING>;   // gpio5.20
+		        spi-max-frequency = <10000000>;
+        		//vdd-supply = <&reg_3v3>;
+		        //xceiver-supply = <&reg_5v0>;
+        		status = "okay";
+	        };
+		};
+	};
+};
+

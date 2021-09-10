@@ -1,0 +1,3 @@
+
+debian/bootcmd.d etc/
+debian/scripts/bootcmd  etc/kernel/postinst.d

@@ -1,0 +1,7 @@
+The Debian Package zulu-linux
+----------------------------
+
+Linux kernel with modules compiled for UniPi Zulu boards
+(5.10.35)
+
+ -- Miroslav Ondra <ondra@faster.cz>  Thu, 09 Oct 2020 11:45:30 +0200

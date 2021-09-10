@@ -1,0 +1,26 @@
+variables:
+#    TEMPLATE_DISABLE: "1"
+    TEMPLATE_DEB_NAME: "zulu-linux"
+    PLATFORM: "zulu"
+
+include: 
+    project: docker/template
+    file: debian-pkg.yaml
+
+##############################################################
+
+build-stable:zulu:
+    extends: .build_for_stable
+    tags: ['arm64']
+    before_script: 
+        - apt-get -y install bc libssl-dev
+
+deploy-test:
+    extends: .deploy_test
+
+deploy-release:
+    extends: .deploy_master
+    variables:
+        GIT_STRATEGY: none
+
+

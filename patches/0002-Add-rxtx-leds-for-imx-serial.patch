@@ -1,0 +1,274 @@
+From 9e03e683d3247239f94bbe4524a955b6a47e6cd8 Mon Sep 17 00:00:00 2001
+From: Miroslav Ondra <ondra@faster.cz>
+Date: Thu, 9 Sep 2021 20:03:38 +0200
+Subject: [PATCH 2/4] Add rxtx leds for imx serial.
+
+---
+ drivers/tty/serial/Kconfig   |   9 +++
+ drivers/tty/serial/Makefile  |   2 +
+ drivers/tty/serial/imx.c     |  22 +++++++-
+ drivers/tty/serial/rxtxled.c | 106 +++++++++++++++++++++++++++++++++++
+ drivers/tty/serial/rxtxled.h |  18 ++++++
+ 5 files changed, 156 insertions(+), 1 deletion(-)
+ create mode 100644 drivers/tty/serial/rxtxled.c
+ create mode 100644 drivers/tty/serial/rxtxled.h
+
+diff --git a/drivers/tty/serial/Kconfig b/drivers/tty/serial/Kconfig
+index 28f22e58639c..73255d0a8399 100644
+--- a/drivers/tty/serial/Kconfig
++++ b/drivers/tty/serial/Kconfig
+@@ -1583,6 +1583,15 @@ config SERIAL_MILBEAUT_USIO_CONSOLE
+ 	  receives all kernel messages and warnings and which allows logins in
+ 	  single user mode).
+ 
++config RXTX_LED_TRIG
++	bool "RXTX Serial LED Triggers"
++	depends on LEDS_CLASS && LEDS_TRIGGERS && (SERIAL_IMX || SERIAL_8250_DW)
++	help
++	  This option adds LED triggers for RX/TX serial activity.
++
++	  Say Y here if you are working on a system with led-class supported
++	  LEDs and you want to use them as activity indicators for serial port.
++
+ endmenu
+ 
+ config SERIAL_MCTRL_GPIO
+diff --git a/drivers/tty/serial/Makefile b/drivers/tty/serial/Makefile
+index caf167f0c10a..9b8bfaddb974 100644
+--- a/drivers/tty/serial/Makefile
++++ b/drivers/tty/serial/Makefile
+@@ -96,3 +96,5 @@ obj-$(CONFIG_SERIAL_MCTRL_GPIO)	+= serial_mctrl_gpio.o
+ 
+ obj-$(CONFIG_SERIAL_KGDB_NMI) += kgdb_nmi.o
+ obj-$(CONFIG_KGDB_SERIAL_CONSOLE) += kgdboc.o
++
++obj-$(CONFIG_RXTX_LED_TRIG)     	+= rxtxled.o
+diff --git a/drivers/tty/serial/imx.c b/drivers/tty/serial/imx.c
+index f6afe305f72d..6ff7ad113a56 100644
+--- a/drivers/tty/serial/imx.c
++++ b/drivers/tty/serial/imx.c
+@@ -37,6 +37,7 @@
+ #include <linux/platform_data/dma-imx.h>
+ 
+ #include "serial_mctrl_gpio.h"
++#include "rxtxled.h"
+ 
+ /* Register definitions */
+ #define URXD0 0x0  /* Receiver Register */
+@@ -242,6 +243,7 @@ struct imx_port {
+ 	struct hrtimer		trigger_stop_tx;
+ 
+ 	struct pm_qos_request   pm_qos_req;
++	void *led_trigger_data;
+ };
+ 
+ struct imx_port_ucrs {
+@@ -756,6 +758,7 @@ static void imx_uart_start_tx(struct uart_port *port)
+ 	if (!sport->dma_is_enabled) {
+ 		ucr1 = imx_uart_readl(sport, UCR1);
+ 		imx_uart_writel(sport, ucr1 | UCR1_TRDYEN, UCR1);
++		rxtx_tx_led_activity(sport->led_trigger_data, 1);
+ 	}
+ 
+ 	if (sport->dma_is_enabled) {
+@@ -770,8 +773,10 @@ static void imx_uart_start_tx(struct uart_port *port)
+ 		}
+ 
+ 		if (!uart_circ_empty(&port->state->xmit) &&
+-		    !uart_tx_stopped(port))
++		    !uart_tx_stopped(port)){
+ 			imx_uart_dma_tx(sport);
++			rxtx_tx_led_activity(sport->led_trigger_data, 1);
++		}
+ 		return;
+ 	}
+ }
+@@ -876,6 +881,7 @@ static irqreturn_t __imx_uart_rxint(int irq, void *dev_id)
+ 
+ out:
+ 	tty_flip_buffer_push(port);
++	rxtx_rx_led_activity(sport->led_trigger_data,1);
+ 
+ 	return IRQ_HANDLED;
+ }
+@@ -1088,6 +1094,13 @@ static void imx_uart_set_mctrl(struct uart_port *port, unsigned int mctrl)
+ 		}
+ 		imx_uart_writel(sport, ucr2, UCR2);
+ 	}
++        else {
++                /*
++		* Do not manipulate with GPIO RTS in RS485 mode as it is
++                * handled in a separate fucntions (working as DIR signal).
++		*/
++		mctrl &= ~(TIOCM_RTS);
++        }
+ 
+ 	ucr3 = imx_uart_readl(sport, UCR3) & ~UCR3_DSR;
+ 	if (!(mctrl & TIOCM_DTR))
+@@ -1217,6 +1230,7 @@ static void imx_uart_dma_rx_callback(void *data)
+ 	}
+ 
+ 	if (w_bytes) {
++		rxtx_rx_led_activity(sport->led_trigger_data,1);
+ 		tty_flip_buffer_push(port);
+ 		dev_dbg(sport->port.dev, "We get %d bytes.\n", w_bytes);
+ 	}
+@@ -2497,6 +2511,11 @@ static int imx_uart_probe(struct platform_device *pdev)
+ 		}
+ 	}
+ 
++#ifdef CONFIG_RXTX_LED_TRIG
++	sport->led_trigger_data = rxtx_add_one_port(DEV_NAME, sport->port.line);
++#else
++	sport->led_trigger_data = NULL;
++#endif
+ 	imx_uart_ports[sport->port.line] = sport;
+ 
+ 	platform_set_drvdata(pdev, sport);
+@@ -2508,6 +2527,7 @@ static int imx_uart_remove(struct platform_device *pdev)
+ {
+ 	struct imx_port *sport = platform_get_drvdata(pdev);
+ 
++	rxtx_remove_one_port(sport->led_trigger_data);
+ 	return uart_remove_one_port(&imx_uart_uart_driver, &sport->port);
+ }
+ 
+diff --git a/drivers/tty/serial/rxtxled.c b/drivers/tty/serial/rxtxled.c
+new file mode 100644
+index 000000000000..70ae6d67507f
+--- /dev/null
++++ b/drivers/tty/serial/rxtxled.c
+@@ -0,0 +1,106 @@
++/*
++ * LED Triggers for RX/TX Serial Activity
++ *
++ * Copyright 2018 Miroslav Ondra <ondra@faster.cz>
++ *
++ * Copyright 2014 Michal Sojka <sojka@merica.cz>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ *
++ */
++
++#include <linux/module.h>
++#include <linux/kernel.h>
++#include <linux/slab.h>
++#include <linux/init.h>
++#include <linux/leds.h>
++//#include <linux/serial_8250.h>
++
++
++#define RXTX_BLINK_DELAY 30
++#define TTY_TRIG_NAME_MAX  TRIG_NAME_MAX
++
++static unsigned long rxtx_blink_delay = RXTX_BLINK_DELAY;
++
++
++struct rxtx_data 
++{
++	char tx_led_trig_name[TTY_TRIG_NAME_MAX];
++	char rx_led_trig_name[TTY_TRIG_NAME_MAX];
++	struct led_trigger *tx_led_trig;
++	struct led_trigger *rx_led_trig;
++};
++
++/*DEFINE_LED_TRIGGER(ledtrig_serial_rx);
++DEFINE_LED_TRIGGER(ledtrig_serial_tx);
++*/
++
++void rxtx_rx_led_activity(void* data, int ev)
++{
++	struct rxtx_data *lp = (struct rxtx_data*) data;
++
++    //printk(KERN_INFO "RXTX-RX: lp=%x\n", lp);
++
++	if (lp) {
++		/* led_trigger_blink_oneshot() handles trig == NULL gracefully */
++		led_trigger_blink_oneshot(lp->rx_led_trig, &rxtx_blink_delay, &rxtx_blink_delay, 0);
++	}
++}
++
++void rxtx_tx_led_activity(void* data, int ev)
++{
++	struct rxtx_data *lp = (struct rxtx_data*) data;
++    //printk(KERN_INFO "RXTX-TX: lp=%x\n", lp);
++	if (lp) {
++		/* led_trigger_blink_oneshot() handles trig == NULL gracefully */
++		led_trigger_blink_oneshot(lp->tx_led_trig, &rxtx_blink_delay, &rxtx_blink_delay, 0);
++	}
++}
++
++EXPORT_SYMBOL_GPL(rxtx_rx_led_activity);
++EXPORT_SYMBOL_GPL(rxtx_tx_led_activity);
++
++void* rxtx_add_one_port(const char* name, int nameline)
++{
++	struct rxtx_data* lp;
++
++	lp = kzalloc(sizeof(struct rxtx_data), GFP_KERNEL);
++	if (lp) {
++		snprintf(lp->tx_led_trig_name, sizeof(lp->tx_led_trig_name),
++	 		"%s%d-tx", name, nameline);
++		snprintf(lp->rx_led_trig_name, sizeof(lp->rx_led_trig_name),
++	 		"%s%d-rx", name, nameline);
++		led_trigger_register_simple(lp->tx_led_trig_name, &lp->tx_led_trig);
++		led_trigger_register_simple(lp->rx_led_trig_name, &lp->rx_led_trig);
++	}
++	return lp;
++}
++
++
++void rxtx_remove_one_port(void* data)
++{
++	struct rxtx_data *lp = (struct rxtx_data*) data;
++	if (lp) {
++		led_trigger_unregister_simple(lp->tx_led_trig);
++		led_trigger_unregister_simple(lp->rx_led_trig);
++		kfree(lp);
++	}
++}
++
++EXPORT_SYMBOL_GPL(rxtx_add_one_port);
++EXPORT_SYMBOL_GPL(rxtx_remove_one_port);
++
++static int __init ledtrig_rxtx_init(void)
++{
++    return 0;
++}
++
++static void __exit ledtrig_rxtx_exit(void)
++{
++
++}
++
++module_init(ledtrig_rxtx_init);
++module_exit(ledtrig_rxtx_exit);
+diff --git a/drivers/tty/serial/rxtxled.h b/drivers/tty/serial/rxtxled.h
+new file mode 100644
+index 000000000000..f1a9f06a9330
+--- /dev/null
++++ b/drivers/tty/serial/rxtxled.h
+@@ -0,0 +1,18 @@
++// SPDX-License-Identifier: GPL-2.0
++#ifndef __RXTXLED_H
++#define __RXTXLED_H
++
++
++#ifdef CONFIG_RXTX_LED_TRIG
++extern void * rxtx_add_one_port(const char *name, int nameline);
++extern void rxtx_remove_one_port(void* data);
++extern void rxtx_rx_led_activity(void* data, int ev);
++extern void rxtx_tx_led_activity(void* data, int ev);
++#else
++static inline void* rxtx_add_one_port(char *name, int nameline) {return NULL;}
++static inline void rxtx_remove_one_port(void* data) {}
++static inline void rxtx_rx_led_activity(void* data, int ev) {}
++static inline void rxtx_tx_led_activity(void* data, int ev) {}
++#endif
++
++#endif
+-- 
+2.20.1
+

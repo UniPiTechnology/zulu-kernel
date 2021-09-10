@@ -1,0 +1,72 @@
+#!/usr/bin/make -f
+
+#export DH_VERBOSE = 1
+
+# Example:
+# the upstream build passes LDFLAGS directly to ld instead of calling gcc for
+# linking; so instead of passing -Wl,foo in LDFLAGS as in automake builds, one
+# should set LDFLAGS to foo directly
+#comma := ,
+#LDFLAGS := $(patsubst -Wl$(comma)%,%,$(LDFLAGS))
+
+## this is required to remove -Wl from LDFLAGS - doesn't work for linker called independently
+export DEB_LDFLAGS_SET = -zrelro
+
+KERNELRELEASE = $(shell make V=0 -s kernelrelease)
+
+
+override_dh_auto_clean:
+	@$(MAKE) distclean -j 4
+	@ # create empty .scmversion to remove + sign from kernelrelease
+	@ :> .scmversion
+
+
+override_dh_auto_configure:
+	$(MAKE) unipi-zulu_defconfig
+
+
+override_dh_auto_build:
+	dh_auto_build --max-parallel=4
+
+#override_dh_auto_install:
+#	echo install disabled
+
+override_dh_auto_install:
+	@install -d debian/zulu-kernel-image/boot
+	@install -d debian/zulu-kernel-image/usr/share/doc/zulu-kernel-image
+	@install -d debian/zulu-kernel-headers
+	@$(MAKE) install INSTALL_PATH=debian/zulu-kernel-image/boot INSTALLKERNEL=__NONE__
+	@$(MAKE) KBUILD_SRC= INSTALL_DTBS_PATH="debian/zulu-kernel-image/boot/dtb" dtbs_install
+	@$(MAKE) KBUILD_SRC= INSTALL_MOD_PATH=debian/zulu-kernel-image modules_install
+	@mv debian/zulu-kernel-image/boot/dtb/freescale/unipi-zulu.dtb debian/zulu-kernel-image/boot/
+	@mv debian/zulu-kernel-image/boot/dtb/freescale/unipi-gpro*.dtb debian/zulu-kernel-image/boot/
+	@mv debian/zulu-kernel-image/boot/dtb/freescale/unipi-zulu-test.dtb debian/zulu-kernel-image/usr/share/doc/zulu-kernel-image/
+	@mv debian/zulu-kernel-image/boot/dtb/freescale/unipi-zulu-gpiotest.dtb debian/zulu-kernel-image/usr/share/doc/zulu-kernel-image/
+	@rm -rf debian/zulu-kernel-image/boot/dtb
+	@find debian/zulu-kernel-image/lib/modules -type l -name build  -exec rm -f \{\} \;
+	debian/scripts/install-kernel-headers $(KERNELRELEASE) debian/zulu-kernel-headers
+	@dh_install
+
+#### Modify pre/post instalation script templates 
+## current version of dh_installdeb doesn't do variable substitution
+IN_FILES  = debian/zulu-kernel-image.postinst
+IN_FILES += debian/zulu-kernel-image.preinst
+IN_FILES += debian/zulu-kernel-image.postrm
+IN_FILES += debian/zulu-kernel-image.prerm
+
+debian/%: debian/%.in
+	@sed 's/#KERNELRELEASE#/$(KERNELRELEASE)/g' < $+ > $@
+
+override_dh_installdeb: $(IN_FILES)
+	@dh_installdeb
+
+##################################
+
+override_dh_gencontrol:
+	@dh_gencontrol -- -VKERNELRELEASE=$(KERNELRELEASE)
+
+%:
+	dh $@
+
+override_dh_dwz:
+	:

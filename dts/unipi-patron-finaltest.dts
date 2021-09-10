@@ -1,0 +1,25 @@
+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+/*
+ * Copyright 2020 Faster CZ
+ * Copyright 2019 NXP
+ */
+
+/dts-v1/;
+
+#include <dt-bindings/usb/pd.h>
+#include "unipi-patron.dts"
+
+&ecspi1 {
+    fsl,spi-num-chipselects = <0>;
+    pinctrl-names = "default";
+    pinctrl-0 = <&pinctrl_ecspi1>;
+    cs-gpios = <&gpio5 9 1>;
+    status = "okay";
+
+    spiflash0: spiflash@0 {
+        compatible = "jedec,spi-nor";
+        reg = <0>;
+        status = "okay";
+        spi-max-frequency = <40000000>;
+    };
+};

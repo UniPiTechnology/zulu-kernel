@@ -1,0 +1,25 @@
+Source: zulu-linux
+Section: unknown
+Priority: optional
+Maintainer: Miroslav Ondra <ondra@faster.cz>
+Build-Depends: debhelper (>= 9)
+Homepage: <insert the upstream URL, if relevant>
+#Vcs-Browser: https://salsa.debian.org/debian/zulu-linux
+#Vcs-Git: https://salsa.debian.org/debian/zulu-linux.git
+
+Package: zulu-kernel-image
+Architecture: arm64
+Depends: zulu-u-boot (>=0.30), ${misc:Depends}
+Provides: zulu-kernel, linux-image
+Description: Linux kernel for UniPi Zulu boards
+ This package contains the Linux kernel, modules and corresponding other
+ files.
+
+Package: zulu-kernel-headers
+Architecture: arm64
+Depends: ${misc:Depends}
+Provides: linux-headers
+Description: Linux kernel headers for UniPi Zulu boards
+ This package provides kernel header files for ${KERNELRELEASE} on arm64.
+ This is useful for people who need to build external modules
+

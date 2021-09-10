@@ -1,0 +1,13 @@
+g1-linux for Debian
+------------------
+
+Homepage http://www.unipi.technology
+
+Based on tag lf-5.10.35-2.0.0 from https://source.codeaurora.org/external/imx/linux-imx/
+
+Source available on 
+    https://git.unipi.technology/UniPi/zulu-linux.git
+
+
+ -- Miroslav Ondra <ondra@faster.cz>  Thu, 23 Aug 2021 11:45:30 +0200
+

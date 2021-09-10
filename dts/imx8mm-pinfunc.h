@@ -1,0 +1,1 @@
+../linux-imx/arch/arm64/boot/dts/freescale/imx8mm-pinfunc.h
