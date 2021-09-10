@@ -15,7 +15,7 @@ build-stable:zulu:
     before_script: 
         - apt-get -y install bc libssl-dev
     variables:
-        GIT_SUBMODULE_STRATEGY: recursive
+        GIT_SUBMODULE_STRATEGY: none
 
 deploy-test:
     extends: .deploy_test
