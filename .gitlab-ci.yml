@@ -3,6 +3,6 @@ include:
     file: debian-pkg-ng.yaml
 variables:
     package_name: "zulu-linux-image"
-    build_exactly_for: "zulu_buster" # omit neuron64 for now
+    build_exactly_for: "zulu_stable" # omit neuron64 for now
     GIT_SUBMODULE_STRATEGY: normal
 
