@@ -1,28 +1,8 @@
-variables:
-#    TEMPLATE_DISABLE: "1"
-    TEMPLATE_DEB_NAME: "zulu-linux"
-    PLATFORM: "zulu"
-
 include: 
     project: docker/template
-    file: debian-pkg.yaml
-
-##############################################################
-
-build-stable:zulu:
-    extends: .build_for_stable
-    tags: ['arm64']
-    before_script: 
-        - apt-get -y install bc libssl-dev
-    variables:
-        GIT_SUBMODULE_STRATEGY: none
-
-deploy-test:
-    extends: .deploy_test
-
-deploy-release:
-    extends: .deploy_master
-    variables:
-        GIT_STRATEGY: none
-
+    file: debian-pkg-ng.yaml
+variables:
+    package_name: "zulu-linux-image"
+    build_exactly_for: "zulu_buster" # omit neuron64 for now
+    GIT_SUBMODULE_STRATEGY: normal
 
