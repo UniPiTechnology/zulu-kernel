@@ -17,7 +17,6 @@ KERNELRELEASE = $(shell make V=0 -s kernelrelease)
 override_dh_auto_clean:
 	echo "#__" $@ "__#"
 	echo $(MAKEFLAGS)
-	unset MAKEFLAGS
 	@$(MAKE) distclean -j 4
 	@ # create empty .scmversion to remove + sign from kernelrelease
 	@ :> .scmversion
@@ -68,8 +67,6 @@ override_dh_gencontrol:
 	@dh_gencontrol -- -VKERNELRELEASE=$(KERNELRELEASE)
 
 %:
-	echo "#__" $@ "__#"
-	echo $(MAKEFLAGS)
 	dh $@
 
 override_dh_dwz:
