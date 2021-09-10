@@ -1,6 +1,6 @@
 #!/usr/bin/make -f
 
-export DH_VERBOSE = 1
+#export DH_VERBOSE = 1
 
 # Example:
 # the upstream build passes LDFLAGS directly to ld instead of calling gcc for
@@ -18,6 +18,8 @@ KERNELRELEASE = $(shell make V=0 -s kernelrelease)
 override_dh_auto_clean:
 	echo "#__" $@ "__#"
 	echo $(MAKEFLAGS)
+	unset MAKEFLAGS
+	MAKEFLAGS := 
 	@$(MAKE) distclean -j 4
 	@ # create empty .scmversion to remove + sign from kernelrelease
 	@ :> .scmversion
