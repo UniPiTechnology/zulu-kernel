@@ -14,6 +14,9 @@ __all:
 defconfig: unipi-zulu_defconfig
 	$(MAKE) -C linux-imx $(MAKEFLAGS) KBUILD_DEFCONFIG=../../../../$^ defconfig
 
+distclean:
+	$(MAKE) -C linux-imx dtstree=../dts $@
+
 clean:
 	@find dts -name .\* -exec rm \{\} \;
 	@find dts -name \*.dtb -exec rm \{\} \;
