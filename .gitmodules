@@ -1,0 +1,4 @@
+[submodule "linux-imx"]
+	path = linux-imx
+	url = ../zulu/linux-imx
+	branch = 5.10.35
