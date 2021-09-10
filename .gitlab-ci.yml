@@ -14,6 +14,8 @@ build-stable:zulu:
     tags: ['arm64']
     before_script: 
         - apt-get -y install bc libssl-dev
+    variables:
+        GIT_SUBMODULE_STRATEGY: recursive
 
 deploy-test:
     extends: .deploy_test
