@@ -2,7 +2,7 @@ include:
     project: docker/template
     file: debian-pkg-ng.yaml
 variables:
-    package_name: "zulu-linux-image"
+    package_name: "zulu-linux"
     build_for_product: "zulu"
     build_for_distribution: "stable"
     GIT_SUBMODULE_STRATEGY: none
