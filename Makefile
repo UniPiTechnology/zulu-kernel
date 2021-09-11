@@ -4,12 +4,12 @@ PHONY := __all
 __all:
 	echo "__all"
 	echo $(MAKEFLAGS)
-	MAKEFLAGS="$(MAKEFLAGS)" (MAKE) -C linux-imx dtstree=../dts
+	MAKEFLAGS="$(MAKEFLAGS)" $(MAKE) -C linux-imx dtstree=../dts
 
 %:
 	echo "__" $@ "__"
 	echo $(MAKEFLAGS)
-	MAKEFLAGS="$(MAKEFLAGS)" (MAKE) -C linux-imx dtstree=../dts $@
+	MAKEFLAGS="$(MAKEFLAGS)" $(MAKE) -C linux-imx dtstree=../dts $@
 
 defconfig: unipi-zulu_defconfig
 	MAKEFLAGS="$(MAKEFLAGS)" $(MAKE) -C linux-imx KBUILD_DEFCONFIG=../../../../$^ defconfig
