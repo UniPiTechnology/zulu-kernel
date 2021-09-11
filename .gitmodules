@@ -1,0 +1,3 @@
+[submodule "linux-imx"]
+	path = linux-imx
+	url = ../zulu/linux-imx
