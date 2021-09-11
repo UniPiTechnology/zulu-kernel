@@ -8,7 +8,7 @@ __all:
 	MAKEFLAGS="$(MAKEFLAGS)" $(MAKE) -C linux-imx dtstree=../dts $@
 
 %_defconfig:
-	MAKEFLAGS="$(MAKEFLAGS)" $(MAKE) -C linux-imx KBUILD_DEFCONFIG=../../../../configs/$^ defconfig
+	MAKEFLAGS="$(MAKEFLAGS)" $(MAKE) -C linux-imx KBUILD_DEFCONFIG=../../../../configs/$@ defconfig
 
 clean:
 	@find dts -name .\* -exec rm \{\} \;
