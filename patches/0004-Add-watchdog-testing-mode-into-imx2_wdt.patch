@@ -59,7 +59,7 @@ index d3751e9d2356..4103dad01de9 100644
 +        regmap_read(wdev->regmap, IMX2_WDT_WCR, &wcr_enable);
 +        printk(KERN_INFO "WD: wcr_enable=%x\n", wcr_enable);
 +        wcr_enable |= IMX2_WDT_WCR_SRS;  /* do not assert int reset */
-+        if (new_timeout==123) 
++        if (new_timeout==123)
 +            wcr_enable &= ~IMX2_WDT_WCR_WDA;
 +        else
 +            wcr_enable |= IMX2_WDT_WCR_WDA;

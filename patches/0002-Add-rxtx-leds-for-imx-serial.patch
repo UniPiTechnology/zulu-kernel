@@ -166,7 +166,7 @@ index 000000000000..70ae6d67507f
 +static unsigned long rxtx_blink_delay = RXTX_BLINK_DELAY;
 +
 +
-+struct rxtx_data 
++struct rxtx_data
 +{
 +	char tx_led_trig_name[TTY_TRIG_NAME_MAX];
 +	char rx_led_trig_name[TTY_TRIG_NAME_MAX];
@@ -210,9 +210,9 @@ index 000000000000..70ae6d67507f
 +	lp = kzalloc(sizeof(struct rxtx_data), GFP_KERNEL);
 +	if (lp) {
 +		snprintf(lp->tx_led_trig_name, sizeof(lp->tx_led_trig_name),
-+	 		"%s%d-tx", name, nameline);
++			"%s%d-tx", name, nameline);
 +		snprintf(lp->rx_led_trig_name, sizeof(lp->rx_led_trig_name),
-+	 		"%s%d-rx", name, nameline);
++			"%s%d-rx", name, nameline);
 +		led_trigger_register_simple(lp->tx_led_trig_name, &lp->tx_led_trig);
 +		led_trigger_register_simple(lp->rx_led_trig_name, &lp->rx_led_trig);
 +	}

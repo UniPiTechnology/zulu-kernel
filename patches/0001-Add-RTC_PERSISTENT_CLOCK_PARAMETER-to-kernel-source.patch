@@ -21,7 +21,7 @@ index b4b129cc45bb..7709fa7a2185 100644
 +config RTC_PERSISTENT_CLOCK_PARAMETER
 +	bool "Set persistent clock from boot-time parameter"
 +	help
-+	  Say y here to enable setting first kernel clock value from kernel 
++	  Say y here to enable setting first kernel clock value from kernel
 +	  boot prameter "persistentclock=".
 +	  Boot parameter can be set during U-boot by reading it from rtc.
 +	  If unsure, say N.
