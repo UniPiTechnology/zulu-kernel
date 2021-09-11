@@ -11,7 +11,7 @@ __all:
 	echo $(MAKEFLAGS)
 	MAKEFLAGS="$(MAKEFLAGS)" $(MAKE) -C linux-imx dtstree=../dts $@
 
-%_defconfig: unipi-zulu_defconfig
+%_defconfig:
 	MAKEFLAGS="$(MAKEFLAGS)" $(MAKE) -C linux-imx KBUILD_DEFCONFIG=../../../../$^ defconfig
 
 clean:
