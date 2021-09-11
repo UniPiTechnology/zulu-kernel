@@ -19,3 +19,7 @@ mrproper:
 	@find dts -name .\* -exec rm \{\} \;
 	@find dts -name \*.dtb -exec rm \{\} \;
 	MAKEFLAGS="$(MAKEFLAGS)" $(MAKE) -C linux-imx $@
+
+scmversion:
+	@ # create empty .scmversion to remove + sign from kernelrelease
+	@ :> linux-imx/.scmversion

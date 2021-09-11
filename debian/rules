@@ -16,8 +16,7 @@ KERNELRELEASE = $(shell make V=0 -s kernelrelease)
 
 override_dh_auto_clean:
 	@$(MAKE) distclean -j 4
-	@ # create empty .scmversion to remove + sign from kernelrelease
-	@ :> .scmversion
+	@$(MAKE) scmversion
 
 
 override_dh_auto_configure:
