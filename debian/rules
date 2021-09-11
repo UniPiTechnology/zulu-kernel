@@ -15,8 +15,6 @@ export DEB_LDFLAGS_SET = -zrelro
 KERNELRELEASE = $(shell make V=0 -s kernelrelease)
 
 override_dh_auto_clean:
-	echo "#__" $@ "__#"
-	echo $(MAKEFLAGS)
 	@$(MAKE) distclean -j 4
 	@ # create empty .scmversion to remove + sign from kernelrelease
 	@ :> .scmversion
