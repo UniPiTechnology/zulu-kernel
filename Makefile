@@ -7,9 +7,8 @@ __all:
 %:
 	MAKEFLAGS="$(MAKEFLAGS)" $(MAKE) -C linux-imx dtstree=../dts $@
 
-PHONY := unipi-zulu_defconfig
 %_defconfig:
-	MAKEFLAGS="$(MAKEFLAGS)" $(MAKE) -C linux-imx KBUILD_DEFCONFIG=../../../../$^ defconfig
+	MAKEFLAGS="$(MAKEFLAGS)" $(MAKE) -C linux-imx KBUILD_DEFCONFIG=../../../../configs/$^ defconfig
 
 clean:
 	@find dts -name .\* -exec rm \{\} \;
