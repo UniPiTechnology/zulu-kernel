@@ -10,15 +10,16 @@
 
 / {
 	model = "UniPi Zulu board (i.MX8MM) - TEST ENV";
-}
 
-&status {
-	default-state = "on";
-};
-
-&ethgreen {
-	default-state = "on";
-	linux,default-trigger = "heartbeat";
+	leds {
+		statusled {
+			default-state = "on";
+		};
+		ethgreen {
+			default-state = "on";
+			linux,default-trigger = "heartbeat";
+		};
+	};
 };
 
 &uart3 { /* console */
