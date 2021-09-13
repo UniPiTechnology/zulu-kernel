@@ -20,7 +20,7 @@ override_dh_auto_clean:
 
 
 override_dh_auto_configure:
-	$(MAKE) unipi-zulu_defconfig
+	@$(MAKE) unipi-zulu_defconfig
 
 
 override_dh_auto_build:
@@ -37,10 +37,10 @@ override_dh_auto_install:
 	@$(MAKE) KBUILD_SRC= INSTALL_DTBS_PATH="../debian/zulu-kernel-image/boot/dtb" dtbs_install
 	@$(MAKE) KBUILD_SRC= INSTALL_MOD_PATH=../debian/zulu-kernel-image modules_install
 	@mv debian/zulu-kernel-image/boot/dtb/freescale/unipi-zulu.dtb debian/zulu-kernel-image/boot/
-	@mv debian/zulu-kernel-image/boot/dtb/freescale/unipi-gpro*.dtb debian/zulu-kernel-image/boot/
+	@mv debian/zulu-kernel-image/boot/dtb/freescale/unipi-patron.dtb debian/zulu-kernel-image/boot/
+	@mv debian/zulu-kernel-image/boot/dtb/freescale/unipi-iris.dtb debian/zulu-kernel-image/boot/
 	@mv debian/zulu-kernel-image/boot/dtb/freescale/unipi-zulu-test.dtb debian/zulu-kernel-image/usr/share/doc/zulu-kernel-image/
 	@mv debian/zulu-kernel-image/boot/dtb/freescale/unipi-zulu-gpiotest.dtb debian/zulu-kernel-image/usr/share/doc/zulu-kernel-image/
-	@rm -rf debian/zulu-kernel-image/boot/dtb
 	@find debian/zulu-kernel-image/lib/modules -type l -name build  -exec rm -f \{\} \;
 	debian/scripts/install-kernel-headers $(KERNELRELEASE) debian/zulu-kernel-headers
 	@dh_install
