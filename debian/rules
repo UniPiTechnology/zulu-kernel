@@ -30,19 +30,18 @@ override_dh_auto_build:
 #	echo install disabled
 
 override_dh_auto_install:
-	@install -d debian/zulu-kernel-image/boot
-	@install -d debian/zulu-kernel-image/usr/share/doc/zulu-kernel-image
+	@install -d debian/build/boot
+	@install -d debian/build/dtb
 	@install -d debian/zulu-kernel-headers
-	@$(MAKE) install INSTALL_PATH=../debian/zulu-kernel-image/boot INSTALLKERNEL=__NONE__
-	@$(MAKE) KBUILD_SRC= INSTALL_DTBS_PATH="../debian/zulu-kernel-image/boot/dtb" dtbs_install
-	@$(MAKE) KBUILD_SRC= INSTALL_MOD_PATH=../debian/zulu-kernel-image modules_install
-	@mv debian/zulu-kernel-image/boot/dtb/unipi-zulu.dtb debian/zulu-kernel-image/boot/
-	@mv debian/zulu-kernel-image/boot/dtb/unipi-patron.dtb debian/zulu-kernel-image/boot/
-	@mv debian/zulu-kernel-image/boot/dtb/unipi-iris.dtb debian/zulu-kernel-image/boot/
-	@mv debian/zulu-kernel-image/boot/dtb/unipi-zulu-test.dtb debian/zulu-kernel-image/usr/share/doc/zulu-kernel-image/
-	@mv debian/zulu-kernel-image/boot/dtb/unipi-zulu-gpiotest.dtb debian/zulu-kernel-image/usr/share/doc/zulu-kernel-image/
-	@find debian/zulu-kernel-image/lib/modules -type l -name build  -exec rm -f \{\} \;
-	debian/scripts/install-kernel-headers $(KERNELRELEASE) debian/zulu-kernel-headers
+	@$(MAKE) install INSTALL_PATH=../debian/build/boot INSTALLKERNEL=__NONE__
+	@$(MAKE) KBUILD_SRC= INSTALL_DTBS_PATH="../debian/build/dtb" dtbs_install
+	@$(MAKE) KBUILD_SRC= INSTALL_MOD_PATH=../debian/build modules_install
+	@find debian/build/lib/modules -type l -name build  -exec rm -f \{\} \;
+	cd linux-imx && \
+		mkdir -p debian && \
+		../debian/scripts/install-kernel-headers $(KERNELRELEASE) ../debian/zulu-kernel-headers
+	cp linux-imx/arch/arm64/boot/dts/freescale/imx8mm-pinfunc.h \
+		debian/zulu-kernel-headers/usr/src/linux-headers-$(KERNELRELEASE)/arch/arm64/boot/dts/freescale
 	@dh_install
 
 #### Modify pre/post instalation script templates 

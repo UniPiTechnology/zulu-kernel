@@ -1,5 +1,11 @@
 #!/bin/sh
 
 if [ -e /etc/bootcmd.d/Makefile ]; then
+    if [ -x /opt/unipi/tools/unipi-check ]; then.
+        PRODUCT=$(/opt/unipi/tools/unipi-check --product || echo patron)
+    else
+        PRODUCT=patron
+    fi
+    make -C /etc/bootcmd.d "use-${PRODUCT}" || true
     make -C /etc/bootcmd.d force
 fi

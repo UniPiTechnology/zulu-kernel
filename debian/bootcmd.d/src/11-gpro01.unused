@@ -1,2 +1,0 @@
-setenv fdtfile unipi-gpro01.dtb
-setenv overlay unipi-gpro01-iqrf-slot1 unipi-gpro01-iqrf-slota
