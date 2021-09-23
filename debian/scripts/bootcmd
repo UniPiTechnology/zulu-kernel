@@ -2,7 +2,7 @@
 
 if [ -e /etc/bootcmd.d/Makefile ]; then
     if [ -x /opt/unipi/tools/unipi-check ]; then
-        PRODUCT=$(/opt/unipi/tools/unipi-check --product || echo patron)
+        PRODUCT=$(/opt/unipi/tools/unipicheck --product || echo patron)
     else
         PRODUCT=patron
     fi

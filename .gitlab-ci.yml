@@ -4,4 +4,4 @@ include:
 variables:
     package_name: "zulu-linux"
     build_for_product: "zulu"
-    build_for_distribution: "stable"
+    build_for_distribution: "newstable"
