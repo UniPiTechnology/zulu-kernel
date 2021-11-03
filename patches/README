@@ -3,3 +3,7 @@ Created from linux source dir by
 
     git format-patch origin/lf-5.10.y
 
+Apply on new repo with 
+    git apply --check [file]
+
+    git am Maildir
