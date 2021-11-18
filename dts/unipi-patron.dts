@@ -18,7 +18,7 @@
 	pinctrl-0 = <&pinctrl_uart1>, <&pinctrl_uart1_ctrl>;
 	status = "okay";
 	rts-gpios = <&gpio4 24 GPIO_ACTIVE_HIGH>;
-    //linux,rs485-enabled-at-boot-time;
+    linux,rs485-enabled-at-boot-time;
 };
 
 &uart2 {
@@ -26,6 +26,7 @@
 	pinctrl-0 = <&pinctrl_uart2>, <&pinctrl_uart2_ctrl>;
 	status = "okay";
 	rts-gpios = <&gpio4 29 GPIO_ACTIVE_HIGH>;
+    linux,rs485-enabled-at-boot-time;
 };
 
 &uart3 { /* console */
