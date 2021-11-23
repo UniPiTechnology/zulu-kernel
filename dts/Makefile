@@ -3,7 +3,8 @@ dtb-$(CONFIG_ARCH_MXC) += unipi-zulu.dtb \
 			  unipi-patron.dtb \
 			  unipi-zulu-test.dtb \
 			  unipi-zulu-gpiotest.dtb \
-			  unipi-patron-finaltest.dtb
+			  unipi-patron-finaltest.dtb \
+			  unipi-iris-finaltest.dtb
 
 DTC_FLAGS_unipi-iris := -@
 

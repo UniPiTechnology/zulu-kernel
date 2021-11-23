@@ -10,7 +10,7 @@
 #include "unipi-zulu.dtsi"
 
 / {
-	model = "Unipi Patron (Zulu, i.MX8MM)";
+	model = "UniPi Zulu board (i.MX8MM)";
 };
 
 &uart1 {
