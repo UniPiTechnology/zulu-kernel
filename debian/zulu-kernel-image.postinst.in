@@ -6,22 +6,29 @@
 set -e
 
 case "$1" in
-    configure)
+	configure)
 	export INITRD=No
-    mkdir -p /etc/bootcmd.d/src
-    echo "setenv kernel vmlinux-#KERNELRELEASE#" > /etc/bootcmd.d/src/10-kernel.conf
-	if [ -d "/etc/kernel/postinst.d" ]; then
-	    run-parts -v --report --exit-on-error --arg=#KERNELRELEASE# --arg=/boot/vmlinux-#KERNELRELEASE# /etc/kernel/postinst.d
+	mkdir -p /etc/bootcmd.d/src
+	echo "setenv kernel vmlinux-#KERNELRELEASE#" > /etc/bootcmd.d/src/10-kernel.conf
+	## patching devicetree if upgrading kernel 5.4.70 on Zulu with licensed Mervis
+	if [ -f /var/lib/mervis/sharkrt.rlic ]; then
+		if [ "`cat /sys/firmware/devicetree/base/compatible | xargs  --null`"="fsl,imx8mm-evk fsl,imx8mm" ]; then
+			make -C /etc/bootcmd.d use-mervis-patch
+		fi
 	fi
-    ;;
+	## end-of-patch
+	if [ -d "/etc/kernel/postinst.d" ]; then
+		run-parts -v --report --exit-on-error --arg=#KERNELRELEASE# --arg=/boot/vmlinux-#KERNELRELEASE# /etc/kernel/postinst.d
+	fi
+	;;
 
-    abort-upgrade|abort-remove|abort-deconfigure)
-    ;;
+	abort-upgrade|abort-remove|abort-deconfigure)
+	;;
 
-    *)
-        echo "postinst called with unknown argument \`$1'" >&2
-        exit 1
-    ;;
+	*)
+		echo "postinst called with unknown argument \`$1'" >&2
+		exit 1
+	;;
 esac
 
 # dh_installdeb will replace this with shell code automatically

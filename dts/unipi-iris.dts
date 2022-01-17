@@ -11,6 +11,13 @@
 / {
 	model = "Unipi Iris board (Unipi Zulu, i.MX8MM)";
 
+    unipi_plc1: unipi-plc1 {
+        compatible = "unipi,unipi-plc";
+        nvmem = <&unipiplc_id>;
+        nvmem-cells = <&unipi_banks>;
+        nvmem-cell-names = "slots";
+    };
+
 	mbleds {
 		compatible = "gpio-leds";
 
@@ -47,7 +54,7 @@
         #mux-control-cells = <0>;
 	    pinctrl-names = "default";
 	    pinctrl-0 = <&pinctrl_ecspi3_cs>;
-        mux-gpios = <&gpio4 30 GPIO_ACTIVE_LOW>, <&gpio4 26 GPIO_ACTIVE_LOW>, <&gpio4 25 GPIO_ACTIVE_LOW>;
+        mux-gpios = <&gpio4 30 GPIO_ACTIVE_LOW>, <&gpio4 25 GPIO_ACTIVE_LOW>, <&gpio4 26 GPIO_ACTIVE_LOW>;
         idle-state = <0>;
     	status = "okay";
     };
@@ -105,10 +112,15 @@
             reg = <0x6f>;
     };
 
-    neuronee@57 {
+    unipiplc_id: ee_mb@57 {
             compatible = "24c01";
             reg = <0x57>;
             vcc-supply = <&vcc>;
+            #address-cells = <1>;
+            #size-cells = <1>;
+            unipi_banks: unipidata@0 {
+                reg = <0x0 0x80>;
+            };
     };
 
 	gpio_mb: pcf8574@20 {
