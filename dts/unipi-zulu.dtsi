@@ -43,7 +43,7 @@
 
 	vcc: regulator-5v-main {
 		compatible = "regulator-fixed";
-		regulator-name = "5V_MAIN";
+		regulator-name = "vcc";
 		regulator-min-microvolt = <5000000>;
 		regulator-max-microvolt = <5000000>;
 		regulator-always-on;

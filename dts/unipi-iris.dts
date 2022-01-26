@@ -13,9 +13,9 @@
 
     unipi_plc1: unipi-plc1 {
         compatible = "unipi,unipi-plc";
-        nvmem = <&unipiplc_id>;
+        /*nvmem = <&unipiplc_id>;
         nvmem-cells = <&unipi_banks>;
-        nvmem-cell-names = "slots";
+        nvmem-cell-names = "slots";*/
     };
 
 	mbleds {
@@ -112,16 +112,18 @@
             reg = <0x6f>;
     };
 
-    unipiplc_id: ee_mb@57 {
+/*    unipiplc_id: ee_mb@57 {
             compatible = "24c01";
             reg = <0x57>;
             vcc-supply = <&vcc>;
             #address-cells = <1>;
             #size-cells = <1>;
+            label = "motherboard";
             unipi_banks: unipidata@0 {
                 reg = <0x0 0x80>;
             };
     };
+*/
 
 	gpio_mb: pcf8574@20 {
 		compatible = "nxp,pcf8574";
