@@ -9,7 +9,7 @@ Homepage: <insert the upstream URL, if relevant>
 
 Package: zulu-kernel-image
 Architecture: arm64
-Depends: zulu-u-boot (>=0.34), ${misc:Depends}
+Depends: ###DEPENDS###, ${misc:Depends}
 Provides: zulu-kernel, linux-image
 Description: Linux kernel for UniPi Zulu boards
  This package contains the Linux kernel, modules and corresponding other
