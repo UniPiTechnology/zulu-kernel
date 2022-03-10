@@ -38,6 +38,7 @@
 			label = "unipi*sysled-xi";
 			gpios = <&gpio5 1 GPIO_ACTIVE_HIGH>;
 			default-state = "off";
+			linux,default-trigger = "30be0000.ethernet-1:01:link";
 		};
 	};
 
