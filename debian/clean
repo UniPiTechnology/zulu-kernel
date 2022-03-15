@@ -1,6 +1,6 @@
-debian/zulu-kernel-image.postinst
-debian/zulu-kernel-image.preinst
-debian/zulu-kernel-image.postrm
-debian/zulu-kernel-image.prerm
+debian/unipi-kernel-image.postinst
+debian/unipi-kernel-image.preinst
+debian/unipi-kernel-image.postrm
+debian/unipi-kernel-image.prerm
 debian/boot.scr
 debian/bootcmd.d/.force

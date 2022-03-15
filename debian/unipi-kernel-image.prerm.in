@@ -1,5 +1,5 @@
 #!/bin/sh
-# prerm script for zulu-kernel-image
+# prerm script for unipi-kernel-image
 #
 # see: dh_installdeb(1)
 
