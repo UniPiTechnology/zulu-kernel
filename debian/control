@@ -9,8 +9,9 @@ Homepage: <insert the upstream URL, if relevant>
 
 Package: ###KERNEL_PACKAGE_NAME### 
 Architecture: arm64
-Depends: ###DEPENDS###, ${misc:Depends}
+Depends: ###KERNEL_DEPENDS###, ${misc:Depends}
 Provides: unipi-kernel, linux-image
+Replaces: ###KERNEL_REPLACES###
 Description: Linux kernel for UniPi Zulu boards
  This package contains the Linux kernel, modules and corresponding other
  files.
@@ -19,6 +20,7 @@ Package: ###HEADERS_PACKAGE_NAME###
 Architecture: arm64
 Depends: ${misc:Depends}
 Provides: linux-headers
+Replaces: ###HEADERS_REPLACES###
 Description: Linux kernel headers for UniPi Zulu boards
  This package provides kernel header files for ${KERNELRELEASE} on arm64.
  This is useful for people who need to build external modules
