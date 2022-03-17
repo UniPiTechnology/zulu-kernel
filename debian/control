@@ -7,15 +7,15 @@ Homepage: <insert the upstream URL, if relevant>
 #Vcs-Browser: https://salsa.debian.org/debian/zulu-linux
 #Vcs-Git: https://salsa.debian.org/debian/zulu-linux.git
 
-Package: unipi-kernel-image
+Package: ###KERNEL_PACKAGE_NAME### 
 Architecture: arm64
-Depends: zulu-u-boot (>=0.34), ${misc:Depends}
+Depends: ###DEPENDS###, ${misc:Depends}
 Provides: unipi-kernel, linux-image
 Description: Linux kernel for UniPi Zulu boards
  This package contains the Linux kernel, modules and corresponding other
  files.
 
-Package: unipi-kernel-headers
+Package: ###HEADERS_PACKAGE_NAME### 
 Architecture: arm64
 Depends: ${misc:Depends}
 Provides: linux-headers
