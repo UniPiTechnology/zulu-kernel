@@ -14,11 +14,12 @@ if [ "$DEBIAN_VERSION" == "buster" ] || [ "$DEBIAN_VERSION" == "stretch" ]; then
     sed -i '/###KERNEL_REPLACES###/d' debian/control
 
     sed -i 's/###HEADERS_PACKAGE_NAME###/zulu-kernel-headers/g' debian/control
+    # deletes the 'Replaces: ' line because it doesn't replace anything
     sed -i '/###HEADERS_REPLACES###/d' debian/control
 else
     sed -i 's/###KERNEL_PACKAGE_NAME###/unipi-kernel/g' debian/control
-    sed -i 's/###DEPENDS###/unipi-u-boot (>=0.34)/g' debian/control
-    sed -i 's/###REPLACES###/zulu-kernel-image/g' debian/control
+    sed -i 's/###KERNEL_DEPENDS###/unipi-u-boot (>=0.34)/g' debian/control
+    sed -i 's/###KERNEL_REPLACES###/zulu-kernel-image/g' debian/control
 
     sed -i 's/###HEADERS_PACKAGE_NAME###/unipi-kernel-headers/g' debian/control
     sed -i 's/###HEADERS_REPLACES###/zulu-kernel-headers/g' debian/control
