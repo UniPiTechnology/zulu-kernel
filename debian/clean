@@ -1,6 +1,6 @@
-debian/unipi-kernel-image.postinst
-debian/unipi-kernel-image.preinst
-debian/unipi-kernel-image.postrm
-debian/unipi-kernel-image.prerm
+debian/unipi-kernel.postinst
+debian/unipi-kernel.preinst
+debian/unipi-kernel.postrm
+debian/unipi-kernel.prerm
 debian/boot.scr
 debian/bootcmd.d/.force

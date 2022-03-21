@@ -46,13 +46,15 @@ override_dh_auto_install:
 
 #### Modify pre/post instalation script templates 
 ## current version of dh_installdeb doesn't do variable substitution
-IN_FILES  = debian/unipi-kernel-image.postinst
-IN_FILES += debian/unipi-kernel-image.preinst
-IN_FILES += debian/unipi-kernel-image.postrm
-IN_FILES += debian/unipi-kernel-image.prerm
+IN_FILES  = debian/unipi-kernel.postinst
+IN_FILES += debian/unipi-kernel.preinst
+IN_FILES += debian/unipi-kernel.postrm
+IN_FILES += debian/unipi-kernel.prerm
 
 debian/%: debian/%.in
 	@sed 's/#KERNELRELEASE#/$(KERNELRELEASE)/g' < $+ > $@
+	# create symlink debian/zulu-kernel-image* => debian/unipi-kernel*
+	@ln -s $@ $(@:debian/unipi-kernel%=debian/zulu-kernel-image%)
 
 override_dh_installdeb: $(IN_FILES)
 	@dh_installdeb
