@@ -106,6 +106,13 @@
 	srp-disable;
 	adp-disable;
 	status = "okay";
+	#address-cells = <1>;
+	#size-cells = <0>;
+
+	zulu-hub@1 {
+		reg = <1>;
+		compatible = "usb0424,2512";
+	};
 };
 
 &usbphynop1 {

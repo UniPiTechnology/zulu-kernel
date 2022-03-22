@@ -216,6 +216,13 @@
 		    MX8MM_IOMUXC_I2C4_SCL_GPIO5_IO20			0x19
 		>;
 	};
+
+	pinctrl_uart4_ctrl: uart4ctrlgrp {
+		fsl,pins = <
+			MX8MM_IOMUXC_SAI5_RXC_GPIO3_IO20		0x040
+		>;
+	};
+
 };
 
 &ecspi2 {
