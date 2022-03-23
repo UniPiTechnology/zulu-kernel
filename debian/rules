@@ -51,8 +51,6 @@ IN_FILES += debian/unipi-kernel.preinst
 IN_FILES += debian/unipi-kernel.postrm
 IN_FILES += debian/unipi-kernel.prerm
 
-@ln -s debian/unipi-kernel.install debian/zulu-kernel-image.install
-
 debian/%: debian/%.in
 	@sed 's/#KERNELRELEASE#/$(KERNELRELEASE)/g' < $+ > $@
 	# create symlink debian/zulu-kernel-image* => debian/unipi-kernel*
