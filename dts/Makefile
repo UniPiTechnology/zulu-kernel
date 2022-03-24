@@ -4,6 +4,7 @@ dtb-$(CONFIG_ARCH_MXC) += unipi-zulu.dtb \
 			  unipi-zulu-test.dtb \
 			  unipi-zulu-gpiotest.dtb \
 			  unipi-patron-finaltest.dtb \
+			  unipi-zulu-altboot.dtb \
 			  unipi-iris-finaltest.dtb
 
 DTC_FLAGS_unipi-iris := -@

@@ -1,0 +1,123 @@
+// SPDX-License-Identifier: (GPL-3.0+ OR MIT)
+/*
+ * Copyright 2020 Faster CZ
+ * Copyright 2019 NXP
+ */
+
+/dts-v1/;
+
+#include <dt-bindings/usb/pd.h>
+#include "unipi-zulu.dtsi"
+
+/ {
+	model = "Unipi Zulu (i.MX8MM)";
+
+	mbleds {
+	    compatible = "gpio-leds";
+
+		    user-led@1 {
+	        label = "unipi-sysled-xhr";
+	        gpios = <&gpio_mb 2 GPIO_ACTIVE_LOW>;
+	        default-state = "off";
+	    };
+	    user-led@2 {
+	        label = "unipi-sysled-xhb";
+	        gpios = <&gpio_mb 3 GPIO_ACTIVE_LOW>;
+		    default-state = "off";
+		    #default-state = "on";
+	        #linux,default-trigger = "heartbeat";
+	    };
+	    user-led@3 {
+	        label = "unipi-sysled-xhg";
+	        gpios = <&gpio_mb 4 GPIO_ACTIVE_LOW>;
+		    default-state = "off";
+
+	    };
+	    user-led@4 {
+	        label = "unipi-sysled-rx";
+	        gpios = <&gpio_mb 6 GPIO_ACTIVE_LOW>;
+	        default-state = "off";
+	    };
+	    user-led@5 {
+	        label = "unipi-sysled-tx";
+	        gpios = <&gpio_mb 7 GPIO_ACTIVE_LOW>;
+	        default-state = "off";
+	    };
+	};
+};
+                    
+&uart3 { /* console */
+    pinctrl-names = "default";
+    pinctrl-0 = <&pinctrl_uart3>, <&pinctrl_uart3_ctrl>;
+    status = "okay";
+    rts-gpios = <&gpio4 27 GPIO_ACTIVE_HIGH>;
+};
+
+&i2c3 {
+    status = "okay";
+
+    rtc@6f {
+            compatible = "microchip,mcp7941x";
+            reg = <0x6f>;
+    };
+
+    gpio_mb: pcf8574@20 {
+          compatible = "nxp,pcf8574";
+          gpio-controller;
+          #gpio-cells = <2>;
+          reg = <0x20>;
+    };
+
+};
+
+&ecspi3 {
+    fsl,spi-num-chipselects = <0>;
+    pinctrl-names = "default";
+    pinctrl-0 = <&pinctrl_ecspi3>, <&pinctrl_ecspi3_cs>;
+    cs-gpios = <&gpio5 25 1>, <&gpio4 25 1>, <&gpio4 26 1>;
+    status = "okay";
+
+    unipispi0: unipispi@0 {
+        compatible = "unipispi";
+        reg = <0>;
+        status = "okay";
+        spi-max-frequency = <12000000>;
+        interrupt-parent = <&gpio4>;
+        interrupts = <23 IRQ_TYPE_EDGE_RISING>;   // gpio4.23
+        neuron-board-index = <0>;
+    };
+
+    unipispi1: unipispi@1 {
+        compatible = "unipispi";
+        reg = <1>;
+        status = "okay";
+        spi-max-frequency = <12000000>;
+        interrupt-parent = <&gpio5>;
+        interrupts = <20 IRQ_TYPE_EDGE_RISING>;   // gpio5.20
+        neuron-board-index = <1>;
+    };
+
+    unipispi2: unipispi@2 {
+        compatible = "unipispi";
+        reg = <2>;
+        status = "okay";
+        spi-max-frequency = <12000000>;
+        interrupt-parent = <&gpio4>;
+        interrupts = <30 IRQ_TYPE_EDGE_RISING>;   // gpio4.30
+        neuron-board-index = <2>;
+    };
+};
+
+&iomuxc {
+
+    pinctrl_ecspi3_cs: ecspi3cs {
+            fsl,pins = <
+                MX8MM_IOMUXC_UART2_TXD_GPIO5_IO25           0x16
+                MX8MM_IOMUXC_SAI2_TXC_GPIO4_IO25            0x16
+                MX8MM_IOMUXC_SAI2_TXD0_GPIO4_IO26           0x16
+                MX8MM_IOMUXC_SAI2_RXD0_GPIO4_IO23           0x19
+                MX8MM_IOMUXC_I2C4_SCL_GPIO5_IO20            0x19
+                MX8MM_IOMUXC_SAI3_RXD_GPIO4_IO30            0x19
+            >;
+    };
+};
