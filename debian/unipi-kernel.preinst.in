@@ -1,5 +1,5 @@
 #!/bin/sh
-# preinst script for zulu-kernel
+# preinst script for unipi-kernel
 #
 # see: dh_installdeb(1)
 
