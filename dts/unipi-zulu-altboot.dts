@@ -15,29 +15,33 @@
 	mbleds {
 	    compatible = "gpio-leds";
 
-		    user-led@1 {
+		user-led@1 {
 	        label = "unipi-sysled-xhr";
 	        gpios = <&gpio_mb 2 GPIO_ACTIVE_LOW>;
 	        default-state = "off";
 	    };
+
 	    user-led@2 {
 	        label = "unipi-sysled-xhb";
 	        gpios = <&gpio_mb 3 GPIO_ACTIVE_LOW>;
-		    default-state = "off";
-		    #default-state = "on";
-	        #linux,default-trigger = "heartbeat";
+		    #default-state = "off";
+		    default-state = "on";
+	        linux,default-trigger = "none";
 	    };
+
 	    user-led@3 {
 	        label = "unipi-sysled-xhg";
 	        gpios = <&gpio_mb 4 GPIO_ACTIVE_LOW>;
 		    default-state = "off";
 
 	    };
+
 	    user-led@4 {
 	        label = "unipi-sysled-rx";
 	        gpios = <&gpio_mb 6 GPIO_ACTIVE_LOW>;
 	        default-state = "off";
 	    };
+        
 	    user-led@5 {
 	        label = "unipi-sysled-tx";
 	        gpios = <&gpio_mb 7 GPIO_ACTIVE_LOW>;
