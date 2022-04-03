@@ -8,5 +8,6 @@ dtb-$(CONFIG_ARCH_MXC) += unipi-zulu.dtb \
 			  unipi-iris-finaltest.dtb
 
 DTC_FLAGS_unipi-iris := -@
+DTC_FLAGS_unipi-patron := -@
 
 dtb-$(CONFIG_ARCH_MXC) += unipi-iris.dtb

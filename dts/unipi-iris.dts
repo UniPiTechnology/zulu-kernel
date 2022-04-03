@@ -13,9 +13,6 @@
 
     unipi_plc1: unipi-plc1 {
         compatible = "unipi,unipi-plc";
-        /*nvmem = <&unipiplc_id>;
-        nvmem-cells = <&unipi_banks>;
-        nvmem-cell-names = "slots";*/
     };
 
     unipi_id: unipi-id {
@@ -74,26 +71,13 @@
 	};
 };
 
-&uart1 {
-	status = "okay";
-};
-
-&uart2 {
-	status = "okay";
-};
-
 &uart3 { /* console */
 	pinctrl-names = "default";
 	pinctrl-0 = <&pinctrl_uart3>, <&pinctrl_uart3_ctrl>;
-    linux,rs485-enabled-at-boot-time;
+	linux,rs485-enabled-at-boot-time;
 	rts-gpios = <&gpio4 27 GPIO_ACTIVE_HIGH>;
 	status = "okay";
 };
-
-&uart4 {
-	status = "okay";
-};
-
 
 &usdhc2 {
     // on pinheader
@@ -123,19 +107,6 @@
         reg = <0x57>;
         status = "okay";
     };
-
-/*    unipiplc_id: ee_mb@57 {
-            compatible = "24c01";
-            reg = <0x57>;
-            vcc-supply = <&vcc>;
-            #address-cells = <1>;
-            #size-cells = <1>;
-            label = "motherboard";
-            unipi_banks: unipidata@0 {
-                reg = <0x0 0x80>;
-            };
-    };
-*/
 
 	gpio_mb: pcf8574@20 {
 		compatible = "nxp,pcf8574";

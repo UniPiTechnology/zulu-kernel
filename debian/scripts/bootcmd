@@ -1,11 +1,9 @@
 #!/bin/sh
 
 if [ -e /etc/bootcmd.d/Makefile ]; then
-    if [ -x /opt/unipi/tools/unipi-check ]; then
-        PRODUCT=$(/opt/unipi/tools/unipicheck --product || echo patron)
-    else
-        PRODUCT=patron
+    DEB_DISTRIB="$(lsb_release -c -s | true)"
+    if [ "${DEB_DISTRIB}" = "buster" ];
+        make -C /etc/bootcmd.d "use-patron" || true
     fi
-    make -C /etc/bootcmd.d "use-${PRODUCT}" || true
     make -C /etc/bootcmd.d force
 fi

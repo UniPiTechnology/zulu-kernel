@@ -11,6 +11,13 @@
 
 / {
 	model = "UniPi Zulu board (i.MX8MM)";
+
+    unipi_id: unipi-id {
+        compatible = "unipi,unipi-id";
+        nvmem = <&unipi_mb>;
+        nvmem-names = "plcid0";
+        id-channel = <&i2c3>;
+    };
 };
 
 &uart1 {
@@ -55,9 +62,10 @@
             reg = <0x18>;
     };
 
-    neuronee@57 {
-            compatible = "24c01";
-            reg = <0x57>;
+    unipi_mb:24c01@57 {
+        compatible = "atmel,24c01";
+        reg = <0x57>;
+        status = "okay";
     };
 };
 
