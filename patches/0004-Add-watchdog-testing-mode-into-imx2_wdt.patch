@@ -1,14 +1,14 @@
-From 9645e28597e67ca0c561047b02397ed954bd3341 Mon Sep 17 00:00:00 2001
+From 984ae745d5ea0585f61b4fa5a2a09c8635702fe5 Mon Sep 17 00:00:00 2001
 From: Miroslav Ondra <ondra@faster.cz>
 Date: Thu, 9 Sep 2021 20:05:09 +0200
-Subject: [PATCH 4/4] Add watchdog testing mode into imx2_wdt
+Subject: [PATCH 04/10] Add watchdog testing mode into imx2_wdt
 
 ---
  drivers/watchdog/imx2_wdt.c | 27 +++++++++++++++++++++++----
  1 file changed, 23 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/watchdog/imx2_wdt.c b/drivers/watchdog/imx2_wdt.c
-index d3751e9d2356..4103dad01de9 100644
+index d3751e9d2..e995df8a1 100644
 --- a/drivers/watchdog/imx2_wdt.c
 +++ b/drivers/watchdog/imx2_wdt.c
 @@ -35,6 +35,7 @@

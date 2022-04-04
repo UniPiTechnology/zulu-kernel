@@ -1,0 +1,44 @@
+From 5e01dddf2ca9ee4764250fb6b166a61f412cc26c Mon Sep 17 00:00:00 2001
+From: Miroslav Ondra <ondra@faster.cz>
+Date: Wed, 26 Jan 2022 18:57:20 +0100
+Subject: [PATCH 09/10] Add /sys/devices/soc0/soc_uid to be compatible with
+ 5.4.70 (Mervis os check)
+
+---
+ drivers/soc/imx/soc-imx8m.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
+
+diff --git a/drivers/soc/imx/soc-imx8m.c b/drivers/soc/imx/soc-imx8m.c
+index 4577a7ba9..f2cf05dcd 100644
+--- a/drivers/soc/imx/soc-imx8m.c
++++ b/drivers/soc/imx/soc-imx8m.c
+@@ -48,6 +48,14 @@ struct imx8_soc_data {
+ 
+ static u64 soc_uid;
+ 
++static ssize_t soc_uid_show(struct device *dev,
++			    struct device_attribute *attr, char *buf)
++{
++	return sprintf(buf, "%016llX\n", soc_uid);
++}
++
++static DEVICE_ATTR_RO(soc_uid);
++
+ #ifdef CONFIG_HAVE_ARM_SMCCC
+ static u32 imx8mq_soc_revision_from_atf(void)
+ {
+@@ -282,6 +290,11 @@ static int imx8_soc_info(struct platform_device *pdev)
+ 		goto free_serial_number;
+ 	}
+ 
++	ret = device_create_file(soc_device_to_device(soc_dev),
++				 &dev_attr_soc_uid);
++	if (ret)
++		goto free_serial_number;
++
+ 	pr_info("SoC: %s revision %s\n", soc_dev_attr->soc_id,
+ 		soc_dev_attr->revision);
+ 
+-- 
+2.20.1
+

@@ -1,7 +1,7 @@
-From 9e03e683d3247239f94bbe4524a955b6a47e6cd8 Mon Sep 17 00:00:00 2001
+From cd6a9f0863dfd93803057067492b08611523a196 Mon Sep 17 00:00:00 2001
 From: Miroslav Ondra <ondra@faster.cz>
 Date: Thu, 9 Sep 2021 20:03:38 +0200
-Subject: [PATCH 2/4] Add rxtx leds for imx serial.
+Subject: [PATCH 02/10] Add rxtx leds for imx serial.
 
 ---
  drivers/tty/serial/Kconfig   |   9 +++
@@ -14,7 +14,7 @@ Subject: [PATCH 2/4] Add rxtx leds for imx serial.
  create mode 100644 drivers/tty/serial/rxtxled.h
 
 diff --git a/drivers/tty/serial/Kconfig b/drivers/tty/serial/Kconfig
-index 28f22e58639c..73255d0a8399 100644
+index 28f22e586..73255d0a8 100644
 --- a/drivers/tty/serial/Kconfig
 +++ b/drivers/tty/serial/Kconfig
 @@ -1583,6 +1583,15 @@ config SERIAL_MILBEAUT_USIO_CONSOLE
@@ -34,7 +34,7 @@ index 28f22e58639c..73255d0a8399 100644
  
  config SERIAL_MCTRL_GPIO
 diff --git a/drivers/tty/serial/Makefile b/drivers/tty/serial/Makefile
-index caf167f0c10a..9b8bfaddb974 100644
+index caf167f0c..9b8bfaddb 100644
 --- a/drivers/tty/serial/Makefile
 +++ b/drivers/tty/serial/Makefile
 @@ -96,3 +96,5 @@ obj-$(CONFIG_SERIAL_MCTRL_GPIO)	+= serial_mctrl_gpio.o
@@ -44,7 +44,7 @@ index caf167f0c10a..9b8bfaddb974 100644
 +
 +obj-$(CONFIG_RXTX_LED_TRIG)     	+= rxtxled.o
 diff --git a/drivers/tty/serial/imx.c b/drivers/tty/serial/imx.c
-index f6afe305f72d..6ff7ad113a56 100644
+index f6afe305f..6ff7ad113 100644
 --- a/drivers/tty/serial/imx.c
 +++ b/drivers/tty/serial/imx.c
 @@ -37,6 +37,7 @@
@@ -135,7 +135,7 @@ index f6afe305f72d..6ff7ad113a56 100644
  
 diff --git a/drivers/tty/serial/rxtxled.c b/drivers/tty/serial/rxtxled.c
 new file mode 100644
-index 000000000000..70ae6d67507f
+index 000000000..9053ac2bb
 --- /dev/null
 +++ b/drivers/tty/serial/rxtxled.c
 @@ -0,0 +1,106 @@
@@ -247,7 +247,7 @@ index 000000000000..70ae6d67507f
 +module_exit(ledtrig_rxtx_exit);
 diff --git a/drivers/tty/serial/rxtxled.h b/drivers/tty/serial/rxtxled.h
 new file mode 100644
-index 000000000000..f1a9f06a9330
+index 000000000..f1a9f06a9
 --- /dev/null
 +++ b/drivers/tty/serial/rxtxled.h
 @@ -0,0 +1,18 @@

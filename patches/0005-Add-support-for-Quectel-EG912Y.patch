@@ -1,7 +1,7 @@
 From 4eadb52168b473716dff0741e1d5883c71612f1f Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Martin=20T=C5=99=C3=ADska?= <triska@unipi.technology>
 Date: Tue, 21 Sep 2021 11:53:29 +0000
-Subject: [PATCH 5/5] Add support for Quectel EG912Y
+Subject: [PATCH 05/10] Add support for Quectel EG912Y
 
 ---
  drivers/usb/serial/option.c | 12 ++++++++++++
