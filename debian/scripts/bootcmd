@@ -2,7 +2,7 @@
 
 if [ -e /etc/bootcmd.d/Makefile ]; then
     DEB_DISTRIB="$(lsb_release -c -s | true)"
-    if [ "${DEB_DISTRIB}" = "buster" ];
+    if [ "${DEB_DISTRIB}" = "buster" ]; then
         make -C /etc/bootcmd.d "use-patron" || true
     fi
     make -C /etc/bootcmd.d force
