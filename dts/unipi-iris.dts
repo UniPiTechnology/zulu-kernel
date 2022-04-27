@@ -44,11 +44,13 @@
             label = "unipi-sysled-rx";
             gpios = <&gpio_mb 6 GPIO_ACTIVE_LOW>;
             default-state = "off";
+			linux,default-trigger = "ttymxc2-rx"
         };
         user-led@5 {
             label = "unipi-sysled-tx";
             gpios = <&gpio_mb 7 GPIO_ACTIVE_LOW>;
             default-state = "off";
+			linux,default-trigger = "ttymxc2-tx"
         };
 	};
 
