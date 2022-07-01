@@ -1,7 +1,7 @@
-From 4d3265a148ee5819fd769b39bc6e8fc8d6db85ac Mon Sep 17 00:00:00 2001
+From 62b58dadfc71dc894808fd7110f6c3ed5d67a6c3 Mon Sep 17 00:00:00 2001
 From: Miroslav Ondra <ondra@faster.cz>
 Date: Thu, 9 Sep 2021 20:02:29 +0200
-Subject: [PATCH 01/10] Add RTC_PERSISTENT_CLOCK_PARAMETER to kernel source
+Subject: [PATCH 01/12] Add RTC_PERSISTENT_CLOCK_PARAMETER to kernel source
 
 ---
  drivers/rtc/Kconfig                  |  8 +++++++
@@ -11,7 +11,7 @@ Subject: [PATCH 01/10] Add RTC_PERSISTENT_CLOCK_PARAMETER to kernel source
  create mode 100644 drivers/rtc/persistent-clock-param.c
 
 diff --git a/drivers/rtc/Kconfig b/drivers/rtc/Kconfig
-index b4b129cc4..88b036054 100644
+index 4b6b0f187..4f4a775cc 100644
 --- a/drivers/rtc/Kconfig
 +++ b/drivers/rtc/Kconfig
 @@ -6,6 +6,14 @@
@@ -30,10 +30,10 @@ index b4b129cc4..88b036054 100644
  	bool
  	select RTC_LIB
 diff --git a/drivers/rtc/Makefile b/drivers/rtc/Makefile
-index 89de36bec..81874caaa 100644
+index 958cadb14..222a84905 100644
 --- a/drivers/rtc/Makefile
 +++ b/drivers/rtc/Makefile
-@@ -184,3 +184,4 @@ obj-$(CONFIG_RTC_DRV_WM8350)	+= rtc-wm8350.o
+@@ -181,3 +181,4 @@ obj-$(CONFIG_RTC_DRV_WM8350)	+= rtc-wm8350.o
  obj-$(CONFIG_RTC_DRV_X1205)	+= rtc-x1205.o
  obj-$(CONFIG_RTC_DRV_XGENE)	+= rtc-xgene.o
  obj-$(CONFIG_RTC_DRV_ZYNQMP)	+= rtc-zynqmp.o

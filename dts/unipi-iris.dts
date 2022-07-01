@@ -64,6 +64,17 @@
     	status = "okay";
     };
 
+/*
+    muxspi2: mux-controller {
+        compatible = "gpio-mux";
+        #mux-control-cells = <0>;
+	    pinctrl-names = "default";
+	    pinctrl-0 = <&pinctrl_ecspi2_cs>;
+	    mux-gpios = <&gpio5 13 GPIO_ACTIVE_LOW>, <&gpio5 25 GPIO_ACTIVE_LOW>;
+        idle-state = <0>;
+    	status = "okay";
+    };
+*/
 	reg_usdhc2_vmmc: regulator-usdhc2 {
 		compatible = "regulator-fixed";
 		regulator-name = "VSD_3V3";
@@ -203,6 +214,10 @@
 	pinctrl-names = "default";
 	pinctrl-0 = <&pinctrl_ecspi2  &pinctrl_ecspi2_cs>;
 	cs-gpios = <&gpio5 13 GPIO_ACTIVE_LOW>, <&gpio5 25 GPIO_ACTIVE_LOW>;
+	/*
+	  pinctrl-0 = <&pinctrl_ecspi2>;
+	  mux-controls = <&muxspi2>;
+	*/
 	status = "okay";
 };
 
@@ -211,14 +226,15 @@
 	fsl,spi-num-chipselects = <0>;
 	pinctrl-names = "default";
 	pinctrl-0 = <&pinctrl_ecspi3>;
+	mux-controls = <&muxspi3>;
 	status = "okay";
-
+	/*
     ecspi4:spi@0 {
-            /* /etc/modprobe.d/spimux-spi-alias.conf
-                alias of:N*T*Cspi-muxC* spi-mux
-                alias of:N*T*Cspi-mux spi-mux
-                alias spi:spi-mux spi-mux
-            */
+            // /etc/modprobe.d/spimux-spi-alias.conf
+            //  alias of:N*T*Cspi-muxC* spi-mux
+            //  alias of:N*T*Cspi-mux spi-mux
+            //  alias spi:spi-mux spi-mux
+            //
             compatible = "spi-mux";
             reg = <0>;
             #address-cells = <1>;
@@ -227,4 +243,5 @@
             mux-controls = <&muxspi3>;
         	status = "okay";
     };
+	*/
 };

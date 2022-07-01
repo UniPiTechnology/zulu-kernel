@@ -1,53 +1,32 @@
-From cd6a9f0863dfd93803057067492b08611523a196 Mon Sep 17 00:00:00 2001
+From 174585f48c6e08a1085afbe9906a84ac4307d335 Mon Sep 17 00:00:00 2001
 From: Miroslav Ondra <ondra@faster.cz>
 Date: Thu, 9 Sep 2021 20:03:38 +0200
-Subject: [PATCH 02/10] Add rxtx leds for imx serial.
+Subject: [PATCH 02/12] Add rxtx leds for imx serial.
 
 ---
- drivers/tty/serial/Kconfig   |   9 +++
  drivers/tty/serial/Makefile  |   2 +
  drivers/tty/serial/imx.c     |  22 +++++++-
  drivers/tty/serial/rxtxled.c | 106 +++++++++++++++++++++++++++++++++++
  drivers/tty/serial/rxtxled.h |  18 ++++++
- 5 files changed, 156 insertions(+), 1 deletion(-)
+ 4 files changed, 147 insertions(+), 1 deletion(-)
  create mode 100644 drivers/tty/serial/rxtxled.c
  create mode 100644 drivers/tty/serial/rxtxled.h
 
-diff --git a/drivers/tty/serial/Kconfig b/drivers/tty/serial/Kconfig
-index 28f22e586..73255d0a8 100644
---- a/drivers/tty/serial/Kconfig
-+++ b/drivers/tty/serial/Kconfig
-@@ -1583,6 +1583,15 @@ config SERIAL_MILBEAUT_USIO_CONSOLE
- 	  receives all kernel messages and warnings and which allows logins in
- 	  single user mode).
- 
-+config RXTX_LED_TRIG
-+	bool "RXTX Serial LED Triggers"
-+	depends on LEDS_CLASS && LEDS_TRIGGERS && (SERIAL_IMX || SERIAL_8250_DW)
-+	help
-+	  This option adds LED triggers for RX/TX serial activity.
-+
-+	  Say Y here if you are working on a system with led-class supported
-+	  LEDs and you want to use them as activity indicators for serial port.
-+
- endmenu
- 
- config SERIAL_MCTRL_GPIO
 diff --git a/drivers/tty/serial/Makefile b/drivers/tty/serial/Makefile
-index caf167f0c..9b8bfaddb 100644
+index 7da0856cd..5ba5c96ea 100644
 --- a/drivers/tty/serial/Makefile
 +++ b/drivers/tty/serial/Makefile
-@@ -96,3 +96,5 @@ obj-$(CONFIG_SERIAL_MCTRL_GPIO)	+= serial_mctrl_gpio.o
+@@ -93,3 +93,5 @@ obj-$(CONFIG_SERIAL_MCTRL_GPIO)	+= serial_mctrl_gpio.o
  
  obj-$(CONFIG_SERIAL_KGDB_NMI) += kgdb_nmi.o
  obj-$(CONFIG_KGDB_SERIAL_CONSOLE) += kgdboc.o
 +
 +obj-$(CONFIG_RXTX_LED_TRIG)     	+= rxtxled.o
 diff --git a/drivers/tty/serial/imx.c b/drivers/tty/serial/imx.c
-index f6afe305f..6ff7ad113 100644
+index 590a25369..104c36edf 100644
 --- a/drivers/tty/serial/imx.c
 +++ b/drivers/tty/serial/imx.c
-@@ -37,6 +37,7 @@
+@@ -36,6 +36,7 @@
  #include <linux/platform_data/dma-imx.h>
  
  #include "serial_mctrl_gpio.h"
@@ -55,7 +34,7 @@ index f6afe305f..6ff7ad113 100644
  
  /* Register definitions */
  #define URXD0 0x0  /* Receiver Register */
-@@ -242,6 +243,7 @@ struct imx_port {
+@@ -243,6 +244,7 @@ struct imx_port {
  	struct hrtimer		trigger_stop_tx;
  
  	struct pm_qos_request   pm_qos_req;
@@ -63,7 +42,7 @@ index f6afe305f..6ff7ad113 100644
  };
  
  struct imx_port_ucrs {
-@@ -756,6 +758,7 @@ static void imx_uart_start_tx(struct uart_port *port)
+@@ -734,6 +736,7 @@ static void imx_uart_start_tx(struct uart_port *port)
  	if (!sport->dma_is_enabled) {
  		ucr1 = imx_uart_readl(sport, UCR1);
  		imx_uart_writel(sport, ucr1 | UCR1_TRDYEN, UCR1);
@@ -71,7 +50,7 @@ index f6afe305f..6ff7ad113 100644
  	}
  
  	if (sport->dma_is_enabled) {
-@@ -770,8 +773,10 @@ static void imx_uart_start_tx(struct uart_port *port)
+@@ -748,8 +751,10 @@ static void imx_uart_start_tx(struct uart_port *port)
  		}
  
  		if (!uart_circ_empty(&port->state->xmit) &&
@@ -83,7 +62,7 @@ index f6afe305f..6ff7ad113 100644
  		return;
  	}
  }
-@@ -876,6 +881,7 @@ static irqreturn_t __imx_uart_rxint(int irq, void *dev_id)
+@@ -854,6 +859,7 @@ static irqreturn_t __imx_uart_rxint(int irq, void *dev_id)
  
  out:
  	tty_flip_buffer_push(port);
@@ -91,7 +70,7 @@ index f6afe305f..6ff7ad113 100644
  
  	return IRQ_HANDLED;
  }
-@@ -1088,6 +1094,13 @@ static void imx_uart_set_mctrl(struct uart_port *port, unsigned int mctrl)
+@@ -1060,6 +1066,13 @@ static void imx_uart_set_mctrl(struct uart_port *port, unsigned int mctrl)
  		}
  		imx_uart_writel(sport, ucr2, UCR2);
  	}
@@ -105,7 +84,7 @@ index f6afe305f..6ff7ad113 100644
  
  	ucr3 = imx_uart_readl(sport, UCR3) & ~UCR3_DSR;
  	if (!(mctrl & TIOCM_DTR))
-@@ -1217,6 +1230,7 @@ static void imx_uart_dma_rx_callback(void *data)
+@@ -1189,6 +1202,7 @@ static void imx_uart_dma_rx_callback(void *data)
  	}
  
  	if (w_bytes) {
@@ -113,7 +92,7 @@ index f6afe305f..6ff7ad113 100644
  		tty_flip_buffer_push(port);
  		dev_dbg(sport->port.dev, "We get %d bytes.\n", w_bytes);
  	}
-@@ -2497,6 +2511,11 @@ static int imx_uart_probe(struct platform_device *pdev)
+@@ -2434,6 +2448,11 @@ static int imx_uart_probe(struct platform_device *pdev)
  		}
  	}
  
@@ -125,7 +104,7 @@ index f6afe305f..6ff7ad113 100644
  	imx_uart_ports[sport->port.line] = sport;
  
  	platform_set_drvdata(pdev, sport);
-@@ -2508,6 +2527,7 @@ static int imx_uart_remove(struct platform_device *pdev)
+@@ -2445,6 +2464,7 @@ static int imx_uart_remove(struct platform_device *pdev)
  {
  	struct imx_port *sport = platform_get_drvdata(pdev);
  

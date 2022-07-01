@@ -1,7 +1,7 @@
-From ceef9a5923e1fad2dc1c73d09bd76eb9e4bd93ff Mon Sep 17 00:00:00 2001
+From 687e5cd174eebf68b4a237f27eb9902b9a027374 Mon Sep 17 00:00:00 2001
 From: Miroslav Ondra <ondra@faster.cz>
 Date: Thu, 9 Sep 2021 20:04:39 +0200
-Subject: [PATCH 03/10] Add Microchip EERAM support into spi-nor
+Subject: [PATCH 04/12] Add Microchip EERAM support into spi-nor
 
 ---
  drivers/mtd/spi-nor/Makefile    |  1 +
@@ -12,7 +12,7 @@ Subject: [PATCH 03/10] Add Microchip EERAM support into spi-nor
  create mode 100644 drivers/mtd/spi-nor/microchip.c
 
 diff --git a/drivers/mtd/spi-nor/Makefile b/drivers/mtd/spi-nor/Makefile
-index 653923896..11616f6f6 100644
+index 6b904e439..2eb59508d 100644
 --- a/drivers/mtd/spi-nor/Makefile
 +++ b/drivers/mtd/spi-nor/Makefile
 @@ -11,6 +11,7 @@ spi-nor-objs			+= gigadevice.o
@@ -24,10 +24,10 @@ index 653923896..11616f6f6 100644
  spi-nor-objs			+= spansion.o
  spi-nor-objs			+= sst.o
 diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 06e1bf01f..f06ddc6ed 100644
+index cc08bd707..e5e53b35b 100644
 --- a/drivers/mtd/spi-nor/core.c
 +++ b/drivers/mtd/spi-nor/core.c
-@@ -2019,6 +2019,7 @@ static const struct spi_nor_manufacturer *manufacturers[] = {
+@@ -1839,6 +1839,7 @@ static const struct spi_nor_manufacturer *manufacturers[] = {
  	&spi_nor_intel,
  	&spi_nor_issi,
  	&spi_nor_macronix,
@@ -47,10 +47,10 @@ index 06e1bf01f..f06ddc6ed 100644
  };
  MODULE_DEVICE_TABLE(spi, spi_nor_dev_ids);
 diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index 6f62ee861..000b124dd 100644
+index 3348e1dd1..261b71e2a 100644
 --- a/drivers/mtd/spi-nor/core.h
 +++ b/drivers/mtd/spi-nor/core.h
-@@ -391,6 +391,7 @@ extern const struct spi_nor_manufacturer spi_nor_gigadevice;
+@@ -482,6 +482,7 @@ extern const struct spi_nor_manufacturer spi_nor_gigadevice;
  extern const struct spi_nor_manufacturer spi_nor_intel;
  extern const struct spi_nor_manufacturer spi_nor_issi;
  extern const struct spi_nor_manufacturer spi_nor_macronix;

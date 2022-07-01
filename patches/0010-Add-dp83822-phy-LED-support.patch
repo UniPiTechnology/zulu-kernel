@@ -1,14 +1,14 @@
-From 5c23cb77d4d18ef244c631075358e1525fbdb65d Mon Sep 17 00:00:00 2001
+From 82e7ae002d6e6e921cef7b4cf135a48b7c8b6c21 Mon Sep 17 00:00:00 2001
 From: Miroslav Ondra <ondra@faster.cz>
 Date: Thu, 10 Mar 2022 19:03:56 +0100
-Subject: [PATCH 10/10] Add dp83822 phy LED support
+Subject: [PATCH 10/12] Add dp83822 phy LED support
 
 ---
  drivers/net/phy/dp83822.c | 11 +++++++++++
  1 file changed, 11 insertions(+)
 
 diff --git a/drivers/net/phy/dp83822.c b/drivers/net/phy/dp83822.c
-index a9b058bb1..503e39129 100644
+index 211b5476a..91050585c 100644
 --- a/drivers/net/phy/dp83822.c
 +++ b/drivers/net/phy/dp83822.c
 @@ -31,6 +31,7 @@
@@ -19,7 +19,7 @@ index a9b058bb1..503e39129 100644
  #define MII_DP83822_GENCFG	0x465
  #define MII_DP83822_SOR1	0x467
  
-@@ -446,11 +447,21 @@ static int dp83822_config_init(struct phy_device *phydev)
+@@ -465,11 +466,21 @@ static int dp83822_config_init(struct phy_device *phydev)
  				return err;
  		}
  	}

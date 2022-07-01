@@ -1,7 +1,7 @@
-From 58530df0e8e886f66ccab1277adea8ef39dfb17e Mon Sep 17 00:00:00 2001
+From 494475cff3bf6e3e7bc97e62a1150bbb34e8eeea Mon Sep 17 00:00:00 2001
 From: Martin Kudlacek <kudlacek@unipi.technology>
 Date: Thu, 6 Jan 2022 13:25:42 +0100
-Subject: [PATCH 08/10] Support for mirroing to Github
+Subject: [PATCH 08/12] Support for mirroing to Github
 
 ---
  .gitignore     | 1 +
@@ -10,10 +10,10 @@ Subject: [PATCH 08/10] Support for mirroing to Github
  create mode 100644 .gitlab-ci.yml
 
 diff --git a/.gitignore b/.gitignore
-index d01cda8e1..8e1d10218 100644
+index 7afd412da..559015157 100644
 --- a/.gitignore
 +++ b/.gitignore
-@@ -94,6 +94,7 @@ modules.order
+@@ -96,6 +96,7 @@ modules.order
  !.gitattributes
  !.gitignore
  !.mailmap

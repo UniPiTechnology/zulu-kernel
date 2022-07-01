@@ -1,0 +1,258 @@
+From ddc348a3959449a901ac19021f40141e52f414e2 Mon Sep 17 00:00:00 2001
+From: Miroslav Ondra <ondra@faster.cz>
+Date: Tue, 31 May 2022 11:56:12 +0200
+Subject: [PATCH 12/12] Add poll mode to spi-imx. Add direct mux to spi-imx
+
+---
+ drivers/spi/spi-imx.c | 105 ++++++++++++++++++++++++++++++++++++------
+ 1 file changed, 92 insertions(+), 13 deletions(-)
+
+diff --git a/drivers/spi/spi-imx.c b/drivers/spi/spi-imx.c
+index e41d1c4d8..e5cf4b12e 100644
+--- a/drivers/spi/spi-imx.c
++++ b/drivers/spi/spi-imx.c
+@@ -25,6 +25,7 @@
+ #include <linux/property.h>
+ 
+ #include <linux/platform_data/dma-imx.h>
++#include <linux/mux/consumer.h>
+ 
+ #define DRIVER_NAME "spi_imx"
+ 
+@@ -122,6 +123,9 @@ struct spi_imx_data {
+ 	struct completion dma_tx_completion;
+ 
+ 	const struct spi_imx_devtype_data *devtype_data;
++	/* MUX */
++	struct mux_control	*mux;
++	unsigned int polling_limit_us;
+ };
+ 
+ static inline int is_imx27_cspi(struct spi_imx_data *d)
+@@ -531,6 +535,7 @@ static int mx51_ecspi_prepare_message(struct spi_imx_data *spi_imx,
+ 	u32 min_speed_hz = ~0U;
+ 	u32 testreg, delay;
+ 	u32 cfg = readl(spi_imx->base + MX51_ECSPI_CONFIG);
++	u8 chip_select = (spi_imx->mux) ? 0 : spi->chip_select;
+ 
+ 	/* set Master or Slave mode */
+ 	if (spi_imx->slave_mode)
+@@ -545,7 +550,7 @@ static int mx51_ecspi_prepare_message(struct spi_imx_data *spi_imx,
+ 		ctrl |= MX51_ECSPI_CTRL_DRCTL(spi_imx->spi_drctl);
+ 
+ 	/* set chip select to use */
+-	ctrl |= MX51_ECSPI_CTRL_CS(spi->chip_select);
++	ctrl |= MX51_ECSPI_CTRL_CS(chip_select);
+ 
+ 	/*
+ 	 * The ctrl register must be written first, with the EN bit set other
+@@ -566,27 +571,27 @@ static int mx51_ecspi_prepare_message(struct spi_imx_data *spi_imx,
+ 	 * BURST_LENGTH + 1 bits are received
+ 	 */
+ 	if (spi_imx->slave_mode)
+-		cfg &= ~MX51_ECSPI_CONFIG_SBBCTRL(spi->chip_select);
++		cfg &= ~MX51_ECSPI_CONFIG_SBBCTRL(chip_select);
+ 	else
+-		cfg |= MX51_ECSPI_CONFIG_SBBCTRL(spi->chip_select);
++		cfg |= MX51_ECSPI_CONFIG_SBBCTRL(chip_select);
+ 
+ 	if (spi->mode & SPI_CPHA)
+-		cfg |= MX51_ECSPI_CONFIG_SCLKPHA(spi->chip_select);
++		cfg |= MX51_ECSPI_CONFIG_SCLKPHA(chip_select);
+ 	else
+-		cfg &= ~MX51_ECSPI_CONFIG_SCLKPHA(spi->chip_select);
++		cfg &= ~MX51_ECSPI_CONFIG_SCLKPHA(chip_select);
+ 
+ 	if (spi->mode & SPI_CPOL) {
+-		cfg |= MX51_ECSPI_CONFIG_SCLKPOL(spi->chip_select);
+-		cfg |= MX51_ECSPI_CONFIG_SCLKCTL(spi->chip_select);
++		cfg |= MX51_ECSPI_CONFIG_SCLKPOL(chip_select);
++		cfg |= MX51_ECSPI_CONFIG_SCLKCTL(chip_select);
+ 	} else {
+-		cfg &= ~MX51_ECSPI_CONFIG_SCLKPOL(spi->chip_select);
+-		cfg &= ~MX51_ECSPI_CONFIG_SCLKCTL(spi->chip_select);
++		cfg &= ~MX51_ECSPI_CONFIG_SCLKPOL(chip_select);
++		cfg &= ~MX51_ECSPI_CONFIG_SCLKCTL(chip_select);
+ 	}
+ 
+ 	if (spi->mode & SPI_CS_HIGH)
+-		cfg |= MX51_ECSPI_CONFIG_SSBPOL(spi->chip_select);
++		cfg |= MX51_ECSPI_CONFIG_SSBPOL(chip_select);
+ 	else
+-		cfg &= ~MX51_ECSPI_CONFIG_SSBPOL(spi->chip_select);
++		cfg &= ~MX51_ECSPI_CONFIG_SSBPOL(chip_select);
+ 
+ 	writel(cfg, spi_imx->base + MX51_ECSPI_CONFIG);
+ 
+@@ -751,6 +756,7 @@ static int mx31_prepare_transfer(struct spi_imx_data *spi_imx,
+ {
+ 	unsigned int reg = MX31_CSPICTRL_ENABLE | MX31_CSPICTRL_MASTER;
+ 	unsigned int clk;
++	u8 chip_select = (spi_imx->mux) ? 0 : spi->chip_select;
+ 
+ 	if (!spi_imx->slave_mode) {
+ 		reg |= spi_imx_clkdiv_2(spi_imx->spi_clk, spi_imx->spi_bus_clk, &clk) <<
+@@ -772,7 +778,7 @@ static int mx31_prepare_transfer(struct spi_imx_data *spi_imx,
+ 	if (spi->mode & SPI_CS_HIGH)
+ 		reg |= MX31_CSPICTRL_SSPOL;
+ 	if (!spi->cs_gpiod)
+-		reg |= (spi->chip_select) <<
++		reg |= (chip_select) <<
+ 			(is_imx35_cspi(spi_imx) ? MX35_CSPICTRL_CS_SHIFT :
+ 						  MX31_CSPICTRL_CS_SHIFT);
+ 
+@@ -858,6 +864,7 @@ static int mx21_prepare_transfer(struct spi_imx_data *spi_imx,
+ 	unsigned int reg = MX21_CSPICTRL_ENABLE | MX21_CSPICTRL_MASTER;
+ 	unsigned int max = is_imx27_cspi(spi_imx) ? 16 : 18;
+ 	unsigned int clk;
++	u8 chip_select = (spi_imx->mux) ? 0 : spi->chip_select;
+ 
+ 	if (!spi_imx->slave_mode) {
+ 		reg |= spi_imx_clkdiv_1(spi_imx->spi_clk, spi_imx->spi_bus_clk, max, &clk)
+@@ -874,7 +881,7 @@ static int mx21_prepare_transfer(struct spi_imx_data *spi_imx,
+ 	if (spi->mode & SPI_CS_HIGH)
+ 		reg |= MX21_CSPICTRL_SSPOL;
+ 	if (!spi->cs_gpiod)
+-		reg |= spi->chip_select << MX21_CSPICTRL_CS_SHIFT;
++		reg |= chip_select << MX21_CSPICTRL_CS_SHIFT;
+ 
+ 	writel(reg, spi_imx->base + MXC_CSPICTRL);
+ 
+@@ -1503,6 +1510,39 @@ static int spi_imx_pio_transfer(struct spi_device *spi,
+ 	return transfer->len;
+ }
+ 
++static int spi_imx_poll_transfer(struct spi_device *spi,
++				struct spi_transfer *transfer)
++{
++	struct spi_imx_data *spi_imx = spi_master_get_devdata(spi->master);
++	unsigned long timeout;
++
++	spi_imx->tx_buf = transfer->tx_buf;
++	spi_imx->rx_buf = transfer->rx_buf;
++	spi_imx->count = transfer->len;
++	spi_imx->txfifo = 0;
++	spi_imx->remainder = 0;
++
++	spi_imx_push(spi_imx);
++
++	timeout = jiffies + 20 + HZ * spi_imx->polling_limit_us / 1000000;
++
++	while (spi_imx->txfifo) {
++		if (time_after(jiffies, timeout)) {
++			dev_err(&spi->dev, "I/O Error in POLL count:%d txfifo:%d\n", spi_imx->count, spi_imx->txfifo);
++			spi_imx->devtype_data->reset(spi_imx);
++			return -ETIMEDOUT;
++		}
++		if (spi_imx->devtype_data->rx_available(spi_imx)) {
++			spi_imx->rx(spi_imx);
++			spi_imx->txfifo--;
++		}
++		if (spi_imx->count)
++			spi_imx_push(spi_imx);
++
++	}
++	return transfer->len;
++}
++
+ static int spi_imx_pio_transfer_slave(struct spi_device *spi,
+ 				      struct spi_transfer *transfer)
+ {
+@@ -1551,6 +1591,7 @@ static int spi_imx_transfer(struct spi_device *spi,
+ 				struct spi_transfer *transfer)
+ {
+ 	struct spi_imx_data *spi_imx = spi_master_get_devdata(spi->master);
++	unsigned long transfer_time;
+ 
+ 	/* flush rxfifo before transfer */
+ 	while (spi_imx->devtype_data->rx_available(spi_imx))
+@@ -1561,6 +1602,12 @@ static int spi_imx_transfer(struct spi_device *spi,
+ 
+ 	transfer->effective_speed_hz = spi_imx->spi_bus_clk;
+ 
++
++	/* Estimate time to transfer */
++	transfer_time = 1000000 * 8 * transfer->len / spi_imx->spi_bus_clk;
++	if (transfer_time < spi_imx->polling_limit_us)
++		return spi_imx_poll_transfer(spi, transfer);
++
+ 	if (spi_imx->usedma)
+ 		return spi_imx_dma_transfer(spi_imx, transfer);
+ 
+@@ -1621,6 +1668,19 @@ static int spi_imx_slave_abort(struct spi_master *master)
+ 	return 0;
+ }
+ 
++static void spi_imx_set_cs(struct spi_device *spi, bool enable)
++{
++	struct spi_imx_data *spi_imx = spi_master_get_devdata(spi->master);
++
++	if (!enable) {
++		if (mux_control_select(spi_imx->mux, spi->chip_select+1))
++			dev_err(&spi->dev, "setting up the mux for cs %d\n",
++			         spi->chip_select);
++	} else {
++		mux_control_deselect(spi_imx->mux);
++	}
++}
++
+ static int spi_imx_probe(struct platform_device *pdev)
+ {
+ 	struct device_node *np = pdev->dev.of_node;
+@@ -1632,6 +1692,7 @@ static int spi_imx_probe(struct platform_device *pdev)
+ 			of_device_get_match_data(&pdev->dev);
+ 	bool slave_mode;
+ 	u32 val;
++	unsigned int polling_limit;
+ 
+ 	slave_mode = devtype_data->has_slavemode &&
+ 			of_property_read_bool(np, "spi-slave");
+@@ -1649,6 +1710,9 @@ static int spi_imx_probe(struct platform_device *pdev)
+ 		/* '11' is reserved */
+ 		spi_drctl = 0;
+ 	}
++	ret = of_property_read_u32(np, "polling-limit", &polling_limit);
++	if (ret < 0)
++		polling_limit = 30;
+ 
+ 	platform_set_drvdata(pdev, master);
+ 
+@@ -1663,6 +1727,16 @@ static int spi_imx_probe(struct platform_device *pdev)
+ 	spi_imx->spi_bus_clk = MXC_SPI_DEFAULT_SPEED;
+ 
+ 	spi_imx->devtype_data = devtype_data;
++	spi_imx->polling_limit_us = polling_limit;
++
++	if (of_find_property(np, "mux-controls", NULL)) {
++		spi_imx->mux = devm_mux_control_get(&pdev->dev, NULL);
++		if (IS_ERR_OR_NULL(spi_imx->mux)) {
++			ret = dev_err_probe(&pdev->dev, PTR_ERR(spi_imx->mux),
++				    "failed to get control-mux\n");
++			goto out_master_put;
++		}
++	}
+ 
+ 	/*
+ 	 * Get number of chip selects from device properties. This can be
+@@ -1672,6 +1746,8 @@ static int spi_imx_probe(struct platform_device *pdev)
+ 	 */
+ 	if (!device_property_read_u32(&pdev->dev, "num-cs", &val))
+ 		master->num_chipselect = val;
++	else if (spi_imx->mux)
++		master->num_chipselect = mux_control_states(spi_imx->mux)-1;
+ 	else
+ 		master->num_chipselect = 3;
+ 
+@@ -1697,6 +1773,9 @@ static int spi_imx_probe(struct platform_device *pdev)
+ 		 */
+ 		spi_imx->bitbang.master->mode_bits |= SPI_CS_WORD;
+ 
++	if (spi_imx->mux)
++		spi_imx->bitbang.master->set_cs = spi_imx_set_cs;
++
+ 	spi_imx->spi_drctl = spi_drctl;
+ 
+ 	init_completion(&spi_imx->xfer_done);
+-- 
+2.20.1
+
