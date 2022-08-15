@@ -42,8 +42,9 @@
 	};
 
 	buttons {
-		compatible = "gpio-keys-polled";
-		poll-interval = <50>;
+		//compatible = "gpio-keys-polled";
+		compatible = "gpio-keys";
+		//poll-interval = <50>;
 		btn1 {
 			label = "btn1";
 			gpios = <&gpio_aux 9 GPIO_ACTIVE_LOW>;
@@ -146,6 +147,12 @@
 		gpio-controller;
 		#gpio-cells = <2>;
 		reg = <0x20>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&pinctrl_pcaint>;
+		interrupt-parent = <&gpio4>;
+		interrupts = <25 IRQ_TYPE_EDGE_FALLING>;
+		interrupt-controller;
+		#interrupt-cells = <2>;
 	};
 };
 
@@ -244,6 +251,12 @@
 		fsl,pins = <
 			MX8MM_IOMUXC_SAI2_RXD0_GPIO4_IO23			0x19
 			MX8MM_IOMUXC_SAI3_RXD_GPIO4_IO30			0x19
+		>;
+	};
+
+	pinctrl_pcaint: pcaint {
+		fsl,pins = <
+			MX8MM_IOMUXC_SAI2_TXC_GPIO4_IO25			0x19
 		>;
 	};
 };
