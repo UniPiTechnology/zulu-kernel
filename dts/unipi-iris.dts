@@ -11,10 +11,6 @@
 / {
 	model = "Unipi Iris board (Unipi Zulu, i.MX8MM)";
 
-    unipi_plc1: unipi-plc1 {
-        compatible = "unipi,unipi-plc";
-    };
-
     unipi_id: unipi-id {
         compatible = "unipi,unipi-id";
         nvmem = <&unipi_mb>;
@@ -196,17 +192,25 @@
 	};
 
 	pinctrl_ecspi_int: ecspiint {
-		fsl,pins = <
-		    MX8MM_IOMUXC_I2C4_SCL_GPIO5_IO20			0x19
-		>;
+		fsl,pins = <MX8MM_IOMUXC_I2C4_SCL_GPIO5_IO20	0x19>;
 	};
 
 	pinctrl_uart4_ctrl: uart4ctrlgrp {
-		fsl,pins = <
-			MX8MM_IOMUXC_SAI5_RXC_GPIO3_IO20		0x040
-		>;
+		fsl,pins = <MX8MM_IOMUXC_SAI5_RXC_GPIO3_IO20	0x040>;
 	};
 
+	pinctrl_slotirq0: slotirq0 {
+		fsl,pins = <MX8MM_IOMUXC_I2C4_SCL_GPIO5_IO20	0x19>;
+	};
+	pinctrl_slotirq1: slotirq1 {
+		fsl,pins = <MX8MM_IOMUXC_I2C4_SDA_GPIO5_IO21	0x19>;
+	};
+	pinctrl_slotirq2: slotirq2 {
+		fsl,pins = <MX8MM_IOMUXC_SAI2_RXD0_GPIO4_IO23	0x19>;
+	};
+	pinctrl_slotirq3: slotirq3 {
+		fsl,pins = <MX8MM_IOMUXC_SAI3_RXFS_GPIO4_IO28	0x19>;
+	};
 };
 
 &ecspi2 {
