@@ -10,9 +10,9 @@
 #include "unipi-zulu.dtsi"
 
 / {
-	model = "UniPi Zulu board (i.MX8MM)";
+	model = "UniPi Patron board (Unipi Zulu, i.MX8MM)";
 
-    unipi_id: unipi-id {
+	unipi_id: unipi-id {
         compatible = "unipi,unipi-id";
         nvmem = <&unipi_mb>;
         nvmem-names = "plcid0";
@@ -27,7 +27,7 @@
 	rts-gpios = <&gpio4 24 GPIO_ACTIVE_HIGH>;
 	// size and count of dma buffer for rx - default is <1024 16>
 	fsl,dma-info = <32 1>;
-    linux,rs485-enabled-at-boot-time;
+	linux,rs485-enabled-at-boot-time;
 };
 
 &uart2 {
@@ -37,7 +37,7 @@
 	rts-gpios = <&gpio4 29 GPIO_ACTIVE_HIGH>;
 	// size and count of dma buffer for rx - default is <1024 16>
 	fsl,dma-info = <32 1>;
-    linux,rs485-enabled-at-boot-time;
+	linux,rs485-enabled-at-boot-time;
 };
 
 &uart3 { /* console */
@@ -75,77 +75,21 @@
     };
 };
 
-
-
 &ecspi2 {
 	fsl,spi-num-chipselects = <0>;
 	pinctrl-names = "default";
 	pinctrl-0 = <&pinctrl_ecspi2>, <&pinctrl_ecspi2_cs>;
 	cs-gpios = <&gpio5 13 1>;
 	status = "disabled";
-
-    mram0: m25p80@0 {
-        #address-cells = <1>;
-        #size-cells = <1>;
-        compatible = "me48lm01";
-        reg = <0>;
-        spi-max-frequency = <40000000>;
-        size = <131072>;
-        pagesize = <128>;
-        address-width = <24>;
-        status = "disabled";
-     };
 };
 
-
 &ecspi3 {
-	fsl,spi-num-chipselects = <0>;
-	pinctrl-names = "default";
+        fsl,spi-num-chipselects = <0>;
+        pinctrl-names = "default";
 	pinctrl-0 = <&pinctrl_ecspi3>, <&pinctrl_ecspi3_cs>;
-	cs-gpios = <&gpio5 25 1>, <&gpio4 25 1>, <&gpio4 26 1>;
-	status = "okay";
-
-    mram1: m25p80@0 {
-		#address-cells = <1>;
-        #size-cells = <1>;
-        compatible = "me48lm01";
-        reg = <0>;
-        spi-max-frequency = <40000000>;
-        size = <131072>;
-        pagesize = <128>;
-        address-width = <24>;
-        status = "disabled";
-    };
-
-    unipispi0: unipispi@0 {
-        compatible = "unipispi";
-        reg = <0>;
+        cs-gpios = <&gpio5 25 1>, <&gpio4 25 1>, <&gpio4 26 1>;
         status = "okay";
-        spi-max-frequency = <12000000>;
-        interrupt-parent = <&gpio4>;
-        interrupts = <23 IRQ_TYPE_EDGE_RISING>;   // gpio4.23
-        neuron-board-index = <0>;
-    };
-
-    unipispi1: unipispi@1 {
-        compatible = "unipispi";
-        reg = <1>;
-        status = "okay";
-        spi-max-frequency = <12000000>;
-        interrupt-parent = <&gpio5>;
-        interrupts = <20 IRQ_TYPE_EDGE_RISING>;   // gpio5.20
-        neuron-board-index = <1>;
-    };
-
-    unipispi2: unipispi@2 {
-        compatible = "unipispi";
-        reg = <2>;
-        status = "okay";
-        spi-max-frequency = <12000000>;
-        interrupt-parent = <&gpio4>;
-        interrupts = <30 IRQ_TYPE_EDGE_RISING>;   // gpio4.30
-        neuron-board-index = <2>;
-    };
+        /* --- BOARDSET OVERLAYS SHOULD BE PLACED HERE --- */
 };
 
 &gpio5 {
@@ -173,9 +117,6 @@
 			MX8MM_IOMUXC_UART2_TXD_GPIO5_IO25			0x16
 			MX8MM_IOMUXC_SAI2_TXC_GPIO4_IO25			0x16
 			MX8MM_IOMUXC_SAI2_TXD0_GPIO4_IO26			0x16
-			MX8MM_IOMUXC_SAI2_RXD0_GPIO4_IO23			0x19
-			MX8MM_IOMUXC_I2C4_SCL_GPIO5_IO20			0x19
-			MX8MM_IOMUXC_SAI3_RXD_GPIO4_IO30			0x19
 		>;
 	};
 
@@ -184,4 +125,15 @@
 			MX8MM_IOMUXC_UART4_TXD_GPIO5_IO29		0x040
 		>;
 	};
+
+        pinctrl_slotirq1: slotirq1 {
+                fsl,pins = <MX8MM_IOMUXC_I2C4_SCL_GPIO5_IO20    0x19>;
+        };
+        pinctrl_slotirq2: slotirq2 {
+                fsl,pins = <MX8MM_IOMUXC_SAI3_RXD_GPIO4_IO30    0x19>;
+        };
+        pinctrl_slotirq0: slotirq0 {
+                fsl,pins = <MX8MM_IOMUXC_SAI2_RXD0_GPIO4_IO23   0x19>;
+        };
+
 };
