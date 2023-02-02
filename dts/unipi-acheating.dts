@@ -96,6 +96,25 @@
 		display-height-chars = <4>;
 		display-width-chars = <20>;
 	};
+
+	reg_ext_bus: regulator-ext-bus {
+		pinctrl-names = "default";
+		pinctrl-0 = <&pinctrl_reg_ext_bus_en>;
+		compatible = "regulator-fixed";
+		regulator-name = "vdd_ext_bus";
+		gpio = <&gpio3 20 GPIO_ACTIVE_HIGH>;
+		enable-active-high;
+		regulator-min-microvolt = <24000000>;
+		regulator-max-microvolt = <24000000>;
+	};
+
+	unipi-dbus {
+		compatible = "unipi-consumer";
+		regulator-name = "display-consumer";
+		regulator-boot-on;
+		regulator-supplies = "vdd_ext_bus";
+	};
+
 };
 
 &uart1 {
@@ -197,13 +216,12 @@
 			compatible = "unipi,unipi-mfd", "iogroup";
 			interrupt-parent = <&gpio4>;
 			interrupts = <23 IRQ_TYPE_EDGE_RISING>;   // gpio4.23
-			core {
-				fw_variant = <0x2A00>;
-				fw_name = "OEM-ACHEAT-1";
-				board_name = "OEM-ACHEAT-1";
-				cycle_counter = <1016>;
-				master_watchdog_enable = <2>;
-			};
+			fw_variant = <0x2A00>;
+			fw_name = "OEM-ACHEAT-1";
+			board_name = "OEM-ACHEAT-1";
+			cycle_counter = <1016>;
+			master_watchdog_enable = <2>;
+
 			gpio_di1:di {
 				compatible = "unipi,gpio-di";
 				gpio-controller;
@@ -216,16 +234,23 @@
 			};
 			do {
 				compatible = "unipi,gpio-do";
+				gpio-controller;
+				#gpio-cells = <2>;
+				gpio-line-names = "DO_1";
 				ngpio = <1>;
 				value-coil = <16>;
 			};
 			ro {
 				compatible = "unipi,gpio-ro";
+				gpio-controller;
+				#gpio-cells = <2>;
+				gpio-line-names = "RO_1", "RO_2", "RO_3", "RO_4", "RO_5", "RO_6", "RO_7", "RO_8",
+				               "RO_9", "RO_10", "RO_11", "RO_12", "RO_13", "RO_14", "RO_15", "RO_16";
 				ngpio = <16>;
 				value-coil = <0>;
 			};
 			ai {
-				compatible = "unipi,ai18";
+				compatible = "unipi,air18";
 				io-count = <17>;
 				io-value-reg = <3>;
 			};
@@ -257,6 +282,12 @@
 	pinctrl_pcaint: pcaint {
 		fsl,pins = <
 			MX8MM_IOMUXC_SAI2_TXC_GPIO4_IO25			0x19
+		>;
+	};
+
+	pinctrl_reg_ext_bus_en: reg-ext-bus-en {
+		fsl,pins = <
+			MX8MM_IOMUXC_SAI5_RXC_GPIO3_IO20			0x04
 		>;
 	};
 };
