@@ -26,7 +26,7 @@
 	status = "okay";
 	rts-gpios = <&gpio4 24 GPIO_ACTIVE_HIGH>;
 	// size and count of dma buffer for rx - default is <1024 16>
-	fsl,dma-info = <32 1>;
+	fsl,dma-info = <16 32>;
 	linux,rs485-enabled-at-boot-time;
 };
 
@@ -36,7 +36,7 @@
 	status = "okay";
 	rts-gpios = <&gpio4 29 GPIO_ACTIVE_HIGH>;
 	// size and count of dma buffer for rx - default is <1024 16>
-	fsl,dma-info = <32 1>;
+	fsl,dma-info = <16 32>;
 	linux,rs485-enabled-at-boot-time;
 };
 
@@ -45,7 +45,7 @@
 	pinctrl-0 = <&pinctrl_uart3>, <&pinctrl_uart3_ctrl>;
 	status = "okay";
 	// size and count of dma buffer for rx - default is <1024 16>
-	fsl,dma-info = <32 1>;
+	fsl,dma-info = <16 32>;
 	rts-gpios = <&gpio4 27 GPIO_ACTIVE_HIGH>;
 };
 
