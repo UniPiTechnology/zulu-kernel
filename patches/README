@@ -6,4 +6,4 @@ Created from linux source dir by
 Apply on new repo with 
     git apply --check [file]
 
-    git am Maildir
+    git am ../patches

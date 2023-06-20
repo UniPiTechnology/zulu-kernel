@@ -41,3 +41,5 @@ cat >/ci-scripts/repo_patch_table.txt <<EOF
 bullseye-zulu-main    bullseye-zulu-main  bullseye-patron-main  bullseye-iris-main
 bullseye-zulu-test    bullseye-zulu-test  bullseye-patron-test  bullseye-iris-test buster-zulu-test
 EOF
+
+./prepare.sh build

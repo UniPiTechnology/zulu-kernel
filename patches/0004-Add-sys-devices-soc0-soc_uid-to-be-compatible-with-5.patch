@@ -1,7 +1,7 @@
-From 0bc11a74af0a976afd1256b011d1da807a8c8c98 Mon Sep 17 00:00:00 2001
+From 3aff235e718ddc032556ea0a0bd63844b8c67031 Mon Sep 17 00:00:00 2001
 From: Miroslav Ondra <ondra@faster.cz>
 Date: Wed, 26 Jan 2022 18:57:20 +0100
-Subject: [PATCH 09/12] Add /sys/devices/soc0/soc_uid to be compatible with
+Subject: [PATCH 4/6] Add /sys/devices/soc0/soc_uid to be compatible with
  5.4.70 (Mervis os check)
 
 ---
@@ -9,7 +9,7 @@ Subject: [PATCH 09/12] Add /sys/devices/soc0/soc_uid to be compatible with
  1 file changed, 13 insertions(+)
 
 diff --git a/drivers/soc/imx/soc-imx8m.c b/drivers/soc/imx/soc-imx8m.c
-index 9f1206f65..cdf07538b 100644
+index b407b5038..bdc2d7b3b 100644
 --- a/drivers/soc/imx/soc-imx8m.c
 +++ b/drivers/soc/imx/soc-imx8m.c
 @@ -46,6 +46,14 @@ struct imx8_soc_data {
@@ -27,7 +27,7 @@ index 9f1206f65..cdf07538b 100644
  #ifdef CONFIG_HAVE_ARM_SMCCC
  static u32 imx8mq_soc_revision_from_atf(void)
  {
-@@ -242,6 +250,11 @@ static int __init imx8_soc_init(void)
+@@ -252,6 +260,11 @@ static int __init imx8_soc_init(void)
  		goto free_serial_number;
  	}
  
@@ -40,5 +40,5 @@ index 9f1206f65..cdf07538b 100644
  		soc_dev_attr->revision);
  
 -- 
-2.20.1
+2.30.2
 

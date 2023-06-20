@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: (GPL-2.0+ OR MIT)
 /*
+ * Copyright 2023 Unipi Technology
  * Copyright 2021 Faster CZ
  * Copyright 2019 NXP
  */
@@ -11,65 +12,65 @@
 / {
 	model = "Unipi Iris board (Unipi Zulu, i.MX8MM)";
 
-    unipi_id: unipi-id {
-        compatible = "unipi,unipi-id";
-        nvmem = <&unipi_mb>;
-        nvmem-names = "plcid0";
-        id-channel = <&i2c3>;
-    };
+	unipi_id: unipi-id {
+		compatible = "unipi,unipi-id";
+		nvmem = <&unipi_mb>;
+		nvmem-names = "plcid0";
+		id-channel = <&i2c3>;
+	};
 	mbleds {
 		compatible = "gpio-leds";
 
-        user-led@1 {
-            label = "unipi-sysled-xhr";
-            gpios = <&gpio_mb 2 GPIO_ACTIVE_LOW>;
-            default-state = "off";
-        };
+		user-led@1 {
+			label = "unipi-sysled-xhr";
+			gpios = <&gpio_mb 2 GPIO_ACTIVE_LOW>;
+			default-state = "off";
+		};
 		user-led@2 {
-            label = "unipi-sysled-xhb";
-            gpios = <&gpio_mb 3 GPIO_ACTIVE_LOW>;
-            default-state = "off";
-        };
+			label = "unipi-sysled-xhb";
+			gpios = <&gpio_mb 3 GPIO_ACTIVE_LOW>;
+			default-state = "off";
+		};
 		user-led@3 {
-            label = "unipi-sysled-xhg";
-            gpios = <&gpio_mb 4 GPIO_ACTIVE_LOW>;
-            default-state = "on";
-            linux,default-trigger = "heartbeat";
-        };
-        user-led@4 {
-            label = "unipi-sysled-rx";
-            gpios = <&gpio_mb 6 GPIO_ACTIVE_LOW>;
-            default-state = "off";
+			label = "unipi-sysled-xhg";
+			gpios = <&gpio_mb 4 GPIO_ACTIVE_LOW>;
+			default-state = "on";
+			linux,default-trigger = "heartbeat";
+		};
+		user-led@4 {
+			label = "unipi-sysled-rx";
+			gpios = <&gpio_mb 6 GPIO_ACTIVE_LOW>;
+			default-state = "off";
 			linux,default-trigger = "ttymxc2-rx";
-        };
-        user-led@5 {
-            label = "unipi-sysled-tx";
-            gpios = <&gpio_mb 7 GPIO_ACTIVE_LOW>;
-            default-state = "off";
+		};
+		user-led@5 {
+			label = "unipi-sysled-tx";
+			gpios = <&gpio_mb 7 GPIO_ACTIVE_LOW>;
+			default-state = "off";
 			linux,default-trigger = "ttymxc2-tx";
-        };
+		};
 	};
 
-    muxspi3: mux-controller {
-        compatible = "gpio-mux";
-        #mux-control-cells = <0>;
-	    pinctrl-names = "default";
-	    pinctrl-0 = <&pinctrl_ecspi3_cs>;
-        mux-gpios = <&gpio4 30 GPIO_ACTIVE_LOW>, <&gpio4 25 GPIO_ACTIVE_LOW>, <&gpio4 26 GPIO_ACTIVE_LOW>;
-        idle-state = <0>;
-    	status = "okay";
-    };
+	muxspi3: mux-controller {
+		compatible = "gpio-mux";
+		#mux-control-cells = <0>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&pinctrl_ecspi3_cs>;
+		mux-gpios = <&gpio4 30 GPIO_ACTIVE_LOW>, <&gpio4 25 GPIO_ACTIVE_LOW>, <&gpio4 26 GPIO_ACTIVE_LOW>;
+		idle-state = <0>;
+		status = "okay";
+	};
 
 /*
-    muxspi2: mux-controller {
-        compatible = "gpio-mux";
-        #mux-control-cells = <0>;
-	    pinctrl-names = "default";
-	    pinctrl-0 = <&pinctrl_ecspi2_cs>;
-	    mux-gpios = <&gpio5 13 GPIO_ACTIVE_LOW>, <&gpio5 25 GPIO_ACTIVE_LOW>;
-        idle-state = <0>;
-    	status = "okay";
-    };
+	muxspi2: mux-controller {
+		compatible = "gpio-mux";
+		#mux-control-cells = <0>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&pinctrl_ecspi2_cs>;
+		mux-gpios = <&gpio5 13 GPIO_ACTIVE_LOW>, <&gpio5 25 GPIO_ACTIVE_LOW>;
+		idle-state = <0>;
+		status = "okay";
+	};
 */
 	reg_usdhc2_vmmc: regulator-usdhc2 {
 		compatible = "regulator-fixed";
@@ -89,7 +90,7 @@
 };
 
 &usdhc2 {
-    // on pinheader
+	// on pinheader
 	pinctrl-names = "default", "state_100mhz", "state_200mhz";
 	pinctrl-0 = <&pinctrl_usdhc2>;
 	pinctrl-1 = <&pinctrl_usdhc2_100mhz>;
@@ -97,7 +98,7 @@
 	cd-gpios = <&gpio_mb 0 GPIO_ACTIVE_LOW>;
 	bus-width = <4>;
 	voltage-ranges = <1800 1800 3300 3300>;
-    sdhci,auto-cmd12;
+	sdhci,auto-cmd12;
 	vmmc-supply = <&reg_usdhc2_vmmc>;
 	status = "okay";
 };
@@ -106,28 +107,28 @@
 &i2c3 {
 	status = "okay";
 
-    rtc@6f {
-            compatible = "microchip,mcp7941x";
-            reg = <0x6f>;
-    };
+	rtc@6f {
+		compatible = "microchip,mcp7941x";
+		reg = <0x6f>;
+	};
 
-    unipi_mb:24c01@57 {
-        compatible = "atmel,24c01";
-        reg = <0x57>;
-        status = "okay";
-    };
+	unipi_mb:24c01@57 {
+		compatible = "atmel,24c01";
+		reg = <0x57>;
+		status = "okay";
+	};
 
 	gpio_mb: pcf8574@20 {
 		compatible = "nxp,pcf8574";
 		gpio-controller;
 		#gpio-cells = <2>;
 		reg = <0x20>;
-        enable_uart3_rx {
-            gpio-hog;
-            gpios = <0x5 GPIO_ACTIVE_HIGH>;
-            output-high;
-            line-name = "enable-uart3-rx";
-        };
+		enable_uart3_rx {
+			gpio-hog;
+			gpios = <0x5 GPIO_ACTIVE_HIGH>;
+			output-high;
+			line-name = "enable-uart3-rx";
+		};
 	};
 };
 
@@ -233,19 +234,19 @@
 	mux-controls = <&muxspi3>;
 	status = "okay";
 	/*
-    ecspi4:spi@0 {
-            // /etc/modprobe.d/spimux-spi-alias.conf
-            //  alias of:N*T*Cspi-muxC* spi-mux
-            //  alias of:N*T*Cspi-mux spi-mux
-            //  alias spi:spi-mux spi-mux
-            //
-            compatible = "spi-mux";
-            reg = <0>;
-            #address-cells = <1>;
-            #size-cells = <0>;
-            spi-max-frequency = <40000000>;
-            mux-controls = <&muxspi3>;
-        	status = "okay";
-    };
+	ecspi4:spi@0 {
+		// /etc/modprobe.d/spimux-spi-alias.conf
+		//  alias of:N*T*Cspi-muxC* spi-mux
+		//  alias of:N*T*Cspi-mux spi-mux
+		//  alias spi:spi-mux spi-mux
+		//
+		compatible = "spi-mux";
+		reg = <0>;
+		#address-cells = <1>;
+		#size-cells = <0>;
+		spi-max-frequency = <40000000>;
+		mux-controls = <&muxspi3>;
+		status = "okay";
+	};
 	*/
 };
