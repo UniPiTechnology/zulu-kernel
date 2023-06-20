@@ -14,7 +14,7 @@ create_git_repo()
 
 patch_source()
 {
-    for p in $1/*; do
+    for p in $1/*.patch; do
         patch -p1 <$p
     done
 }
