@@ -42,6 +42,8 @@ override_dh_auto_install:
 		../debian/scripts/install-kernel-headers $(KERNELRELEASE) ../debian/###HEADERS_PACKAGE_NAME###
 	cp linux-imx/arch/arm64/boot/dts/freescale/imx8mm-pinfunc.h \
 		debian/###HEADERS_PACKAGE_NAME###/usr/src/linux-headers-$(KERNELRELEASE)/arch/arm64/boot/dts/freescale
+	cp dts/*.dtsi \
+		debian/###HEADERS_PACKAGE_NAME###/usr/src/linux-headers-$(KERNELRELEASE)/arch/arm64/boot/dts/freescale
 	@dh_install
 
 #### Modify pre/post instalation script templates 
