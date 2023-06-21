@@ -614,6 +614,6 @@
 
 &gpc {
 	/* power-domains management - Zulu VYTUHNE bez jakehokoli vypisu na konzolu */
-//	status = "disabled";
+	status = "disabled";
 };
 
