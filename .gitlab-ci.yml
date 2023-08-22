@@ -6,3 +6,4 @@ variables:
     build_for_product: "zulu"
     build_for_distribution: "newstable"
     mirror_to_github: "true"
+    devel_repository: private_bokula
