@@ -2,11 +2,11 @@ debian/build/boot/* boot/
 debian/build/lib/modules lib/
 
 debian/build/dtb/unipi-zulu.dtb boot/
-debian/build/dtb/unipi-patron.dtb boot/
+#debian/build/dtb/unipi-patron.dtb boot/
 debian/build/dtb/unipi-iris.dtb boot/
 debian/build/dtb/unipi-zulu-test.dtb usr/share/doc/unipi-kernel/
 debian/build/dtb/unipi-zulu-gpiotest.dtb usr/share/doc/unipi-kernel/
 debian/build/dtb/unipi-zulu-altboot.dtb usr/share/doc/unipi-kernel/
 
-debian/bootcmd.d etc/
+#debian/bootcmd.d etc/
 debian/scripts/bootcmd  etc/kernel/postinst.d

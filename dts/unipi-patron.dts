@@ -28,7 +28,6 @@
 	rts-gpios = <&gpio4 24 GPIO_ACTIVE_HIGH>;
 	// size and count of dma buffer for rx - default is <1024 16>
 	fsl,dma-info = <16 32>;
-	linux,rs485-enabled-at-boot-time;
 };
 
 &uart2 {
@@ -38,7 +37,7 @@
 	rts-gpios = <&gpio4 29 GPIO_ACTIVE_HIGH>;
 	// size and count of dma buffer for rx - default is <1024 16>
 	fsl,dma-info = <16 32>;
-	linux,rs485-enabled-at-boot-time;
+	//linux,rs485-enabled-at-boot-time;
 };
 
 &uart3 { /* console */
@@ -64,9 +63,10 @@
             */
     };
 
-    w1master@18 {
-            compatible = "ds2482";
-            reg = <0x18>;
+    w1master:w1master@18 {
+             compatible = "ds2482";
+             reg = <0x18>;
+             status = "disabled";
     };
 
     unipi_mb:24c01@57 {
@@ -94,7 +94,7 @@
 };
 
 &gpio5 {
-	enable_uart3_rx {
+	enable_uart3_rx: enable_uart3_rx {
 		pinctrl-names = "default";
 		pinctrl-0 = <&pinctrl_uart3_enable>;
         gpio-hog;
@@ -137,4 +137,8 @@
                 fsl,pins = <MX8MM_IOMUXC_SAI2_RXD0_GPIO4_IO23   0x19>;
         };
 
+};
+
+&snvs_rtc {
+	status = "disabled";
 };

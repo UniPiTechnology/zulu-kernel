@@ -1,4 +1,0 @@
-# patch to force compatibility with Mervis license
-# apply this patch if Mervis was licensed on kernel 5.4.70 and kernel was upgraded to 5.10.35 and later
-
-fdt set / compatible "fsl,imx8mm-evk" "fsl,imx8mm"
