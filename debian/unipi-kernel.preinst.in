@@ -16,13 +16,10 @@ fi
 
 case "$1" in
     install)
-		mkdir -p /etc/bootcmd.d
-		touch /etc/bootcmd.d/disable-iqrf
-		touch /etc/bootcmd.d/disable-485-on-ttyS0
-		touch /etc/bootcmd.d/enable-1wmaster
-	;;
+        mkdir -p /etc/bootcmd.d
+    ;;
 
-	upgrade)
+    upgrade)
     ;;
 
     abort-upgrade)
