@@ -1,5 +1,10 @@
 
 Linux kernel for Zulu SBC
 =========================
+Version used for Bookworm. Main branch is main-6.1. 
+For tagging packages use tag 6.X
+
+Previous version is in branch main-5.15, tagging 1.X
+
 
 downloads kernel source tree from https://github.com/nxp-imx/linux-imx/archive/refs/tags

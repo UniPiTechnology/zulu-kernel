@@ -53,6 +53,20 @@
 		regulator-always-on;
 	};
 
+	reg_usb_supply: regulator-usb2 {
+		compatible = "regulator-fixed";
+		regulator-name = "USB_5V";
+		regulator-min-microvolt = <5000000>;
+		regulator-max-microvolt = <5000000>;
+
+		pinctrl-names = "default";
+		pinctrl-0 = <&pinctrl_reg_usb_supply>;
+		gpio = <&gpio1 5 GPIO_ACTIVE_LOW>;
+		off-on-delay-us = <20000>;
+		enable-active-low;
+		status = "okay";
+	};
+
 	power-domains {
 		compatible = "simple-bus";
 		/* HSIO SS */
@@ -225,6 +239,7 @@
 	power-domains = <&usb_otg2_pd>;
 	#address-cells = <1>;
 	#size-cells = <0>;
+	vbus-supply = <&reg_usb_supply>;
 
 	zulu-hub@1 {
 		reg = <1>;
@@ -237,9 +252,11 @@
 };
 
 &usbphynop2 {
-	reset = <&gpio1 5 1>;
-	pinctrl-names = "default";
-	pinctrl-0 = <&pinctrl_usbphynop2>;
+	//reset = <&gpio1 5 1>;
+	//pinctrl-names = "default";
+	//pinctrl-0 = <&pinctrl_usbphynop2>;
+	//vbus-supply = <&reg_usb_supply>;
+	status = "okay";
 	/delete-property/ power-domains;
 };
 
@@ -567,7 +584,7 @@
 		>;
 	};
 
-	pinctrl_usbphynop2: usbphynop2grp {
+	pinctrl_reg_usb_supply: usbsupply2 {
 		fsl,pins = <
 			MX8MM_IOMUXC_GPIO1_IO05_GPIO1_IO5			0x06
 		>;
