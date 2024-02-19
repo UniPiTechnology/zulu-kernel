@@ -1,0 +1,5 @@
+linux-imx/
+dts/.*.cmd
+dts/.*.tmp
+dts/*.dtb
+

@@ -3,23 +3,9 @@
 # https://stackoverflow.com/questions/5750450/how-can-i-print-each-command-before-executing
 set -o xtrace
 
-. /ci-scripts/include.sh
-
 apt-get -y install bc libssl-dev
 
 . /ci-scripts/include.sh
-
-# the debian/control needs to be altered for different distros
-    sed -i 's/###KERNEL_PACKAGE_NAME###/unipi-kernel/g' debian/control
-    sed -i 's/###KERNEL_DEPENDS###/unipi-u-boot (>=0.34)/g' debian/control
-    sed -i 's/###KERNEL_REPLACES###/zulu-kernel-image/g' debian/control
-    sed -i 's/###KERNEL_BREAKS###/zulu-kernel-image/g' debian/control
-
-    sed -i 's/###HEADERS_PACKAGE_NAME###/unipi-kernel-headers/g' debian/control
-    sed -i 's/###HEADERS_REPLACES###/zulu-kernel-headers/g' debian/control
-    sed -i 's/###HEADERS_BREAKS###/zulu-kernel-headers/g' debian/control
-
-    sed -i 's/###HEADERS_PACKAGE_NAME###/unipi-kernel-headers/g' debian/rules
 
 # modify repo-patch-table
 cat >/ci-scripts/repo_patch_table.txt <<EOF
