@@ -1,20 +1,19 @@
-From 3aff235e718ddc032556ea0a0bd63844b8c67031 Mon Sep 17 00:00:00 2001
+From d39adc05b5918ca80547f2a2552a862df27f0212 Mon Sep 17 00:00:00 2001
 From: Miroslav Ondra <ondra@faster.cz>
-Date: Wed, 26 Jan 2022 18:57:20 +0100
-Subject: [PATCH 4/6] Add /sys/devices/soc0/soc_uid to be compatible with
- 5.4.70 (Mervis os check)
+Date: Mon, 19 Feb 2024 10:47:09 +0100
+Subject: [PATCH 4/7] Add /sys/devices/soc0/soc_uid to be compatible with
 
 ---
  drivers/soc/imx/soc-imx8m.c | 13 +++++++++++++
  1 file changed, 13 insertions(+)
 
 diff --git a/drivers/soc/imx/soc-imx8m.c b/drivers/soc/imx/soc-imx8m.c
-index b407b5038..bdc2d7b3b 100644
+index 5b823d58a..f360e1e48 100644
 --- a/drivers/soc/imx/soc-imx8m.c
 +++ b/drivers/soc/imx/soc-imx8m.c
-@@ -46,6 +46,14 @@ struct imx8_soc_data {
- 
+@@ -48,6 +48,14 @@ struct imx8_soc_data {
  static u64 soc_uid;
+ static u64 soc_uid_h;
  
 +static ssize_t soc_uid_show(struct device *dev,
 +			    struct device_attribute *attr, char *buf)
@@ -27,7 +26,7 @@ index b407b5038..bdc2d7b3b 100644
  #ifdef CONFIG_HAVE_ARM_SMCCC
  static u32 imx8mq_soc_revision_from_atf(void)
  {
-@@ -252,6 +260,11 @@ static int __init imx8_soc_init(void)
+@@ -265,6 +273,11 @@ static int __init imx8_soc_init(void)
  		goto free_serial_number;
  	}
  

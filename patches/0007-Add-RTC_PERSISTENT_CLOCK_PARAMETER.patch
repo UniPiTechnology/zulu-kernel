@@ -1,7 +1,7 @@
-From 3bb6531e58ad4c2e3595074268cd1a7fec87fe63 Mon Sep 17 00:00:00 2001
+From 42298436eaabeb600712a4aedcee74542af72fe1 Mon Sep 17 00:00:00 2001
 From: Miroslav Ondra <ondra@faster.cz>
-Date: Thu, 22 Jun 2023 16:33:41 +0200
-Subject: [PATCH] Add RTC_PERSISTENT_CLOCK_PARAMETER
+Date: Mon, 19 Feb 2024 10:50:32 +0100
+Subject: [PATCH 7/7] Add RTC_PERSISTENT_CLOCK_PARAMETER
 
 ---
  drivers/rtc/Kconfig                  |  8 +++++++

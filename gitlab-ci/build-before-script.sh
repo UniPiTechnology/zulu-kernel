@@ -9,10 +9,12 @@ apt-get -y install bc libssl-dev
 
 # modify repo-patch-table
 cat >/ci-scripts/repo_patch_table.txt <<EOF
-bullseye-zulu-main    bullseye-zulu-main  bullseye-patron-main  bullseye-iris-main
-bullseye-zulu-test    bullseye-zulu-test  bullseye-patron-test  bullseye-iris-test
 bookworm-zulu-main    bookworm-zulu-main  bookworm-patron-main  bookworm-iris-main
 bookworm-zulu-test    bookworm-zulu-test  bookworm-patron-test  bookworm-iris-test
 EOF
 
 ./prepare.sh build
+
+
+#bullseye-zulu-main    bullseye-zulu-main  bullseye-patron-main  bullseye-iris-main
+#bullseye-zulu-test    bullseye-zulu-test  bullseye-patron-test  bullseye-iris-test

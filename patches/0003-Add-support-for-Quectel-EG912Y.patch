@@ -1,18 +1,18 @@
-From d7be11790f483716b43c0fd99f716f7fb68b5f90 Mon Sep 17 00:00:00 2001
+From 9eda5d87cadf230fca00f94e521e34ce2711abb0 Mon Sep 17 00:00:00 2001
 From: Miroslav Ondra <ondra@faster.cz>
-Date: Tue, 6 Jun 2023 18:43:46 +0200
-Subject: [PATCH 3/6] Add support for Quectel EG912Y
+Date: Mon, 19 Feb 2024 10:46:21 +0100
+Subject: [PATCH 3/7] Add support for Quectel EG912Y
 
 ---
  drivers/usb/serial/option.c | 14 ++++++++++++++
  1 file changed, 14 insertions(+)
 
 diff --git a/drivers/usb/serial/option.c b/drivers/usb/serial/option.c
-index dee79c7d8..001b52671 100644
+index f13930b45..fccc15290 100644
 --- a/drivers/usb/serial/option.c
 +++ b/drivers/usb/serial/option.c
-@@ -262,6 +262,9 @@ static void option_instat_callback(struct urb *urb);
- #define QUECTEL_PRODUCT_EC200S_CN		0x6002
+@@ -275,6 +275,9 @@ static void option_instat_callback(struct urb *urb);
+ #define QUECTEL_PRODUCT_EM061K_LCN		0x6009
  #define QUECTEL_PRODUCT_EC200T			0x6026
  #define QUECTEL_PRODUCT_RM500K			0x7001
 +#define QUECTEL_PRODUCT_EG912Y			0x6001
@@ -21,7 +21,7 @@ index dee79c7d8..001b52671 100644
  
  #define CMOTECH_VENDOR_ID			0x16d8
  #define CMOTECH_PRODUCT_6001			0x6001
-@@ -1183,6 +1186,10 @@ static const struct usb_device_id option_ids[] = {
+@@ -1238,6 +1241,10 @@ static const struct usb_device_id option_ids[] = {
  	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_EC200S_CN, 0xff, 0, 0) },
  	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_EC200T, 0xff, 0, 0) },
  	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_RM500K, 0xff, 0x00, 0x00) },
@@ -32,7 +32,7 @@ index dee79c7d8..001b52671 100644
  
  	{ USB_DEVICE(CMOTECH_VENDOR_ID, CMOTECH_PRODUCT_6001) },
  	{ USB_DEVICE(CMOTECH_VENDOR_ID, CMOTECH_PRODUCT_CMU_300) },
-@@ -2270,6 +2277,13 @@ static int option_probe(struct usb_serial *serial,
+@@ -2340,6 +2347,13 @@ static int option_probe(struct usb_serial *serial,
  	if (device_flags & NUMEP2 && iface_desc->bNumEndpoints != 2)
  		return -ENODEV;
  

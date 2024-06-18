@@ -1,7 +1,7 @@
-From 5aaf525f1846ec9070c59c23ff65107e37a5f083 Mon Sep 17 00:00:00 2001
+From 58265044acdd91b11fd360687e8320785c8613fd Mon Sep 17 00:00:00 2001
 From: Miroslav Ondra <ondra@faster.cz>
-Date: Mon, 4 Apr 2022 16:32:49 +0200
-Subject: [PATCH 2/6] Add watchdog testing mode into imx2_wdt
+Date: Mon, 19 Feb 2024 10:45:25 +0100
+Subject: [PATCH 2/7] Add watchdog testing mode into imx2_wdt
 
 ---
  drivers/watchdog/imx2_wdt.c | 27 +++++++++++++++++++++++----

@@ -2,7 +2,7 @@
 
 set -e
 
-NXP_TAG=lf-6.1.1-1.0.1
+NXP_TAG=lf-6.1.55-2.2.0
 
 create_git_repo()
 {
