@@ -1,0 +1,58 @@
+From a23495ba6fe0f2ff4d527f5cc98e9c1784199ab2 Mon Sep 17 00:00:00 2001
+From: martyy <triska@unipi.technology>
+Date: Mon, 15 Jul 2024 06:15:10 +0000
+Subject: [PATCH] Supress protocol error for TUSB2036 legacy usb hub
+
+---
+ drivers/usb/core/hub.c | 12 ++++++++++--
+ drivers/usb/core/hub.h |  4 ++++
+ 2 files changed, 14 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/usb/core/hub.c b/drivers/usb/core/hub.c
+index 0069a24bd..7dc8afe48 100644
+--- a/drivers/usb/core/hub.c
++++ b/drivers/usb/core/hub.c
+@@ -733,6 +733,8 @@ static void hub_irq(struct urb *urb)
+ 		return;
+ 
+ 	default:		/* presumably an error */
++		if ((hub->quirk_suppress_prot_error == 1) && (status == -EPROTO))
++			return;
+ 		/* Cause a hub reset after 10 consecutive errors */
+ 		dev_dbg(hub->intfdev, "transfer --> %d\n", status);
+ 		if ((++hub->nerrors < 10) || hub->error)
+@@ -1447,8 +1449,14 @@ static int hub_configure(struct usb_hub *hub,
+ 	}
+ 
+ 	maxchild = hub->descriptor->bNbrPorts;
+-	dev_info(hub_dev, "%d port%s detected\n", maxchild,
+-			(maxchild == 1) ? "" : "s");
++	dev_info(hub_dev, "%d port%s detected VID:%04x PID:%04x\n", maxchild,
++			(maxchild == 1) ? "" : "s", hdev->descriptor.idVendor, hdev->descriptor.idProduct);
++
++	if ((hdev->descriptor.idProduct == 0x2036) && (hdev->descriptor.idVendor == 0x0451)){
++  		dev_info(hub_dev, "Protocol error suppression enabled for this hub!\n");
++                hub->quirk_suppress_prot_error=1;
++	}
++
+ 
+ 	hub->ports = kcalloc(maxchild, sizeof(struct usb_port *), GFP_KERNEL);
+ 	if (!hub->ports) {
+diff --git a/drivers/usb/core/hub.h b/drivers/usb/core/hub.h
+index b2925856b..f78e0e3b6 100644
+--- a/drivers/usb/core/hub.h
++++ b/drivers/usb/core/hub.h
+@@ -66,6 +66,10 @@ struct usb_hub {
+ 	unsigned		quirk_check_port_auto_suspend:1;
+ 
+ 	unsigned		has_indicators:1;
++
++        unsigned		quirk_suppress_prot_error:1;
++
++
+ 	u8			indicator[USB_MAXCHILDREN];
+ 	struct delayed_work	leds;
+ 	struct delayed_work	init_work;
+-- 
+2.39.2
+

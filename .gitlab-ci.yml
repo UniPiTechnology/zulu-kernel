@@ -4,6 +4,6 @@ include:
 variables:
     package_name: "zulu-linux"
     build_for_product: "zulu"
-    build_for_distribution: "newstable"
+    build_for_distribution: "stable newstable"
     mirror_to_github: "true"
     #devel_repository: private_bokula
