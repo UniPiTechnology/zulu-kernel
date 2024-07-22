@@ -31,7 +31,7 @@ index 0069a24bd..7dc8afe48 100644
 +			(maxchild == 1) ? "" : "s", hdev->descriptor.idVendor, hdev->descriptor.idProduct);
 +
 +	if ((hdev->descriptor.idProduct == 0x2036) && (hdev->descriptor.idVendor == 0x0451)){
-+  		dev_info(hub_dev, "Protocol error suppression enabled for this hub!\n");
++		dev_info(hub_dev, "Protocol error suppression enabled for this hub!\n");
 +                hub->quirk_suppress_prot_error=1;
 +	}
 +
